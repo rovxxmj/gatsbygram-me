@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
 export const Base = styled.div`
   width: 100vw;
@@ -36,12 +36,13 @@ export const Label = styled.label`
 
   > span {
     font-size: 13px;
+    opacity: 0;
   }
 `;
 
 export const Input = styled.input`
   border: 1px solid #dfdfdf;
-  padding: 10px;
+  padding: 12px;
   border-radius: 4px;
 
   &:focus {

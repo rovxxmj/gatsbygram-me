@@ -1,20 +1,12 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import styled from "@emotion/styled";
-import { useForm } from "react-hook-form";
-import { useCallback } from "react";
-import {
-  Base,
-  Button,
-  Container,
-  Form,
-  Input,
-  Label,
-  Title,
-} from "@pages/sign_in/styles";
-import axios from "@utils/axios";
-import Router from "next/router";
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import Image from 'next/image';
+import styled from '@emotion/styled';
+import { useForm } from 'react-hook-form';
+import { useCallback } from 'react';
+import { Base, Button, Container, Form, Input, Label, Title } from '@pages/sign_in/styles';
+import axios from '@utils/axios';
+import Router from 'next/router';
 
 interface IForm {
   email: string;
@@ -35,19 +27,19 @@ const SignUp: NextPage = () => {
     formState: { errors },
   } = useForm<IForm>({
     defaultValues: {
-      email: "",
-      name: "",
-      nickname: "",
-      password: "",
+      email: '',
+      name: '',
+      nickname: '',
+      password: '',
     },
-    mode: "onChange",
+    mode: 'onChange',
   });
   const onSubmit = useCallback((data: IForm) => {
     axios
-      .post("/api/users", data)
+      .post('/api/users', data)
       .then((res) => {
         reset();
-        Router.push("/sing_in");
+        Router.push('/sign_in');
       })
       .catch((err) => console.error(err));
   }, []);
@@ -58,41 +50,21 @@ const SignUp: NextPage = () => {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Label>
             <span>이메일 주소</span>
-            <Input
-              type={"text"}
-              placeholder={"이메일"}
-              {...register("email")}
-              autoComplete={"off"}
-            />
+            <Input type={'text'} placeholder={'이메일'} {...register('email')} autoComplete={'off'} />
           </Label>
           <Label>
             <span>성명</span>
-            <Input
-              type={"text"}
-              placeholder={"name"}
-              {...register("name")}
-              autoComplete={"off"}
-            />
+            <Input type={'text'} placeholder={'name'} {...register('name')} autoComplete={'off'} />
           </Label>
           <Label>
             <span>사용자 이름</span>
-            <Input
-              type={"text"}
-              placeholder={"nickname"}
-              {...register("nickname")}
-              autoComplete={"off"}
-            />
+            <Input type={'text'} placeholder={'nickname'} {...register('nickname')} autoComplete={'off'} />
           </Label>
           <Label>
             <span>비밀번호</span>
-            <Input
-              type={"password"}
-              placeholder={"password"}
-              {...register("password")}
-              autoComplete={"off"}
-            />
+            <Input type={'password'} placeholder={'password'} {...register('password')} autoComplete={'off'} />
           </Label>
-          <Button type={"submit"}>가입하기</Button>
+          <Button type={'submit'}>가입하기</Button>
         </Form>
       </Container>
     </Base>

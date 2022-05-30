@@ -1,10 +1,11 @@
 require("dotenv/config");
 const express = require("express");
 const cors = require("cors");
-// const passport = require("passport");
+const passport = require("passport");
 const passportConfig = require("./passport");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const apiRouter = require("./routes/api");
-
 const db = require("./models");
 const app = express();
 app.set("PORT", process.env.PORT || 3065);
@@ -27,7 +28,16 @@ app.use(
 );
 app.use(express.json()); // req.body
 app.use(express.urlencoded({ extended: true })); // formData
-
+app.use(cookieParser());
+app.use(
+  session({
+    saveUninitialized: false,
+    resave: false,
+    secret: process.env.COOKIE_SECRET,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 app.use("/api", apiRouter);
 
 app.listen(app.get("PORT"), () =>

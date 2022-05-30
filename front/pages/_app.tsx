@@ -1,7 +1,8 @@
-import "../styles/globals.css";
-import type { AppProps } from "next/app";
-import AppLayout from "@components/AppLayout";
-import { RecoilRoot } from "recoil";
+import '../styles/globals.css';
+import type { AppProps } from 'next/app';
+import AppLayout from '@components/AppLayout';
+import wrapper from '@store/configureStore';
+import { RecoilRoot } from 'recoil';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -13,4 +14,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);

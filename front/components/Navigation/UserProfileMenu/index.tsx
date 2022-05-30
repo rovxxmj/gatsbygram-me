@@ -1,13 +1,16 @@
-import Menu from "@components/Menu";
-import React, { FC } from "react";
+import Menu from '@components/Menu';
+import React, { FC, useCallback } from 'react';
 interface IProps {
   show: boolean;
   onCloseModal: () => void;
 }
 
-import styled from "@emotion/styled";
-import Link from "next/link";
-import { useTheme } from "@emotion/react";
+import styled from '@emotion/styled';
+import Link from 'next/link';
+import { useTheme } from '@emotion/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { IState, logoutAction } from '@reducers/index';
+import Router from 'next/router';
 
 export const MenuItemWrapper = styled.ul`
   position: absolute;
@@ -39,11 +42,18 @@ export const MenuItem = styled.li<{ hoverColor: string }>`
 `;
 const UserProfileMenu: FC<IProps> = ({ show, onCloseModal }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const { me } = useSelector((state: IState) => state.user);
+  const onLogout = useCallback(() => {
+    dispatch(logoutAction());
+    Router.push('/sign_in');
+  }, []);
+
   return (
     <Menu show={show} onCloseModal={onCloseModal}>
       <MenuItemWrapper>
         <MenuItem hoverColor={theme.colors.gray[50]}>
-          <Link href="/[nickname]">
+          <Link href={`/${me?.email}`}>
             <a>프로필</a>
           </Link>
         </MenuItem>
@@ -62,8 +72,8 @@ const UserProfileMenu: FC<IProps> = ({ show, onCloseModal }) => {
             <a>계정 전환</a>
           </span>
         </MenuItem>
-        <MenuItem hoverColor={theme.colors.gray[50]}>
-          <span id={"logout"}>로그아웃</span>
+        <MenuItem hoverColor={theme.colors.gray[50]} onClick={onLogout}>
+          <span id={'logout'}>로그아웃</span>
         </MenuItem>
       </MenuItemWrapper>
     </Menu>

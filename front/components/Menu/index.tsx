@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback } from 'react';
 
 interface IProps {
   children: React.ReactNode;
@@ -6,8 +6,8 @@ interface IProps {
   onCloseModal: () => void;
 }
 
-import styled from "@emotion/styled";
-import { Container } from "@components/AppLayout";
+import styled from '@emotion/styled';
+import { Container } from '@components/AppLayout';
 
 export const Base = styled.div`
   position: absolute;
@@ -21,7 +21,7 @@ export const Base = styled.div`
 const Menu: FC<IProps> = ({ children, show, onCloseModal }) => {
   const stopPropagation = useCallback((e: any) => {
     e.stopPropagation();
-    // if (onCloseModal) onCloseModal();
+    if (onCloseModal) onCloseModal();
   }, []);
 
   if (!show) return null;

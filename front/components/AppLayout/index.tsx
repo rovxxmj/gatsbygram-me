@@ -1,11 +1,9 @@
-import React, { FC } from "react";
-import Navigation from "@components/Navigation";
-import styled from "@emotion/styled";
-import { ThemeProvider, useTheme } from "@emotion/react";
-import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil";
-import { isDark } from "@recoil/atoms";
-import { light, dark } from "@themes/themes";
-import { useRouter } from "next/router";
+import React, { FC } from 'react';
+import Navigation from '@components/Navigation';
+import styled from '@emotion/styled';
+import { ThemeProvider, useTheme } from '@emotion/react';
+import { light, dark } from '@themes/themes';
+import { useRouter } from 'next/router';
 interface IProps {
   children: React.ReactNode;
 }
@@ -31,17 +29,16 @@ export const Container = styled.div`
 `;
 
 const AppLayout: FC<IProps> = ({ children }) => {
-  const isDarkAtom = useRecoilValue(isDark);
   const router = useRouter();
   return (
-    <ThemeProvider theme={isDarkAtom ? dark : light}>
+    <ThemeProvider theme={light}>
       <Base>
-        {["/sign_in", "/sign_up"].includes(router.route) ? (
+        {['/sign_in', '/sign_up'].includes(router.route) ? (
           <div>{children}</div>
         ) : (
           <>
             <Navigation />
-            <Main bgColor={"#fafafa"}>
+            <Main bgColor={'#fafafa'}>
               <Container>{children}</Container>
             </Main>
           </>

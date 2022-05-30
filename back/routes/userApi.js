@@ -3,7 +3,7 @@ const { User } = require("../models/index");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 const router = express.Router();
-
+const db = require("../models");
 // 회원가입
 router.post("/", async (req, res, next) => {
   const { email, name, nickname, password } = req.body;
@@ -28,13 +28,13 @@ router.post("/", async (req, res, next) => {
 });
 
 // 내 정보 불러오기
-router.get("/me", async (req, res, next) => {
-  return res.json({ success: true });
+router.get("/", async (req, res, next) => {
+  return res.json(req.user || false);
 });
 
 // 로그인
 router.post("/login", (req, res, next) => {
-  passport.authenticate("localStrategy", (err, user, info) => {
+  passport.authenticate("local", (err, user, info) => {
     // 서버 에러
     if (err) {
       console.error(err);
@@ -51,14 +51,27 @@ router.post("/login", (req, res, next) => {
         console.error(loginErr);
         return next(loginErr);
       }
-      return res.json(user);
+
+      const fullUserWithoutPw = await User.findOne({
+        where: { id: user.id },
+        attributes: { exclude: ["password"] },
+        include: [
+          { model: db.Post },
+          { model: db.User, as: "Followings" },
+          { model: db.User, as: "Followers" },
+        ],
+      });
+      console.log(fullUserWithoutPw);
+      return res.status(200).json(fullUserWithoutPw);
     });
   })(req, res, next);
 });
 
 // 로그아웃
 router.post("/logout", (req, res, next) => {
-  return res.json(true);
+  req.logout();
+  req.session.destroy();
+  return res.send("ok");
 });
 
 module.exports = router;
