@@ -1,11 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { useRecoilValue } from "recoil";
-import SearchForm from "@components/SearchForm";
-import { AiFillPlusSquare, AiOutlinePlusSquare } from "react-icons/ai";
 import {
   BsPlusSquare,
   BsHouseDoorFill,
@@ -21,6 +16,7 @@ import {
   BsGearFill,
   BsHandbagFill,
   BsHandbag,
+  BsBagFill,
 } from "react-icons/bs";
 import {
   IoPaperPlaneOutline,
@@ -40,209 +36,148 @@ import {
   IoVideocamOutline,
   IoVideocam,
 } from "react-icons/io5";
-import Menu from "@components/Menu";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { useRecoilState } from "recoil";
+import { user } from "@recoil/atoms";
+import UserProfileMenu from "@components/Navigation/UserProfileMenu";
 
-export const Base = styled.nav<{ bgColor: string; borderColor: string; textColor: string }>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
-  background-color: ${({ bgColor }) => bgColor};
+export const Base = styled.div<{ borderColor: string }>`
   border-bottom: 1px solid ${({ borderColor }) => borderColor};
-  color: ${({ textColor }) => textColor};
+  height: 68px;
 `;
 
 export const Container = styled.div`
   max-width: 960px;
-  height: 100%;
   margin: auto;
+  height: 100%;
   padding: 0 20px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+
+  > div,
+  ul {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
 `;
 
-export const Logo = styled.h1`
+export const Logo = styled.div`
+  font-size: 20px;
+  font-weight: 700;
+  margin-right: 20px;
+`;
+export const SearchBox = styled.div`
+  background-color: gray;
+`;
+export const ActionItemWrapper = styled.ul`
   display: flex;
   align-items: center;
-  max-width: 146px;
-  font-style: italic;
+  justify-content: flex-end;
+`;
 
-  > a {
-    padding-right: 18px;
+export const ActionItem = styled.li`
+  font-size: 22px;
+  margin-right: 3px;
+  line-height: 16px;
+
+  > a,
+  span {
+    display: block;
+    padding: 10px 8px;
     cursor: pointer;
   }
 `;
 
-export const SearchWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  position: relative;
-`;
-
-export const ActionItemWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  max-width: 350px;
-`;
-
-export const ActionItem = styled.div`
-  margin-right: 8px;
-  font-size: 22px;
-  line-height: 15px;
-  z-index: 2000;
-  > a,
-  span {
-    padding: 5px;
-    display: block;
-  }
-
+export const UserProfile = styled.div`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #dfdfdf;
   cursor: pointer;
-`;
-
-export const UserAvartar = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background-color: #f2f2f2;
-  cursor: pointer;
-  font-size: 14px;
-`;
-
-export const MenuItemWrapper = styled.ul<{ bgColor: string; hoverColor: string }>`
-  display: flex;
-  flex-direction: column;
-  background-color: ${({ bgColor }) => bgColor};
-  width: 200px;
-  border-radius: 5px;
-  overflow: hidden;
-  border: 1px solid lightgray;
-  //box-shadow: ;
-
-  > li {
-    &:hover {
-      background-color: ${({ hoverColor }) => hoverColor};
-    }
-  }
-`;
-
-export const MenuItem = styled.li`
-  font-size: 14px;
-  cursor: pointer;
-  > a,
-  span {
-    display: flex;
-    padding: 10px 12px;
-    align-items: center;
-    > svg {
-      font-size: 18px;
-      margin-right: 10px;
-    }
-  }
+  margin-left: 5px;
 `;
 
 const Navigation = () => {
-  const Router = useRouter();
   const theme = useTheme();
-  const [showAddPostModal, setShowAddPostModal] = useState(false);
-  const [showHeartModal, setShowHeartModal] = useState(false);
+  const router = useRouter();
+  const [userData, setUserData] = useRecoilState(user);
+  const [showLikeMenu, setShowLikeMenu] = useState(false);
   const [showUserProfileMenu, setShowUserProfileMenu] = useState(false);
-  const [nickname, setNickname] = useState("example");
+  const [showMakePostModal, setShowMakePostModal] = useState(false);
 
-  const style = useMemo(() => ({ top: 60, right: 0 }), []);
   const onCloseModal = useCallback(() => {
     setShowUserProfileMenu(false);
   }, []);
-  const onClickUserProfile = useCallback(() => {
-    setShowUserProfileMenu(true);
+  const onClickUserProfileMenu = useCallback(() => {
+    setShowUserProfileMenu((prev) => !prev);
   }, []);
-
+  const onClickLikeMenu = useCallback(() => {
+    setShowLikeMenu((prev) => !prev);
+  }, []);
   return (
-    <>
-      <Base bgColor={theme.colors.bgColor} borderColor={theme.colors.gray[100]} textColor={theme.colors.textColor}>
-        <Container>
-          <Logo>
+    <Base borderColor={theme.colors.gray[100]}>
+      <Container>
+        <Logo>
+          <Link href={"/"}>
+            <a>Gatsbygram</a>
+          </Link>
+        </Logo>
+        <SearchBox>Search box..</SearchBox>
+        <ActionItemWrapper>
+          <ActionItem>
             <Link href={"/"}>
-              <a>Instagram</a>
-            </Link>
-          </Logo>
-          <SearchWrapper>
-            <SearchForm />
-          </SearchWrapper>
-          <ActionItemWrapper>
-            <ActionItem>
-              <Link href={"/"}>
-                <a>{Router.route === "/" ? <BsHouseDoorFill /> : <BsHouseDoor />}</a>
-              </Link>
-            </ActionItem>
-            <ActionItem>
-              <Link href={"/direct/inbox"}>
-                <a>{Router.route === "/direct/inbox" ? <IoPaperPlane /> : <IoPaperPlaneOutline />}</a>
-              </Link>
-            </ActionItem>
-            <ActionItem>
-              <span>{showAddPostModal ? <IoAddCircle /> : <BsPlusSquare />}</span>
-            </ActionItem>
-            <ActionItem>
-              <Link href={"/explore"}>
-                <a>{Router.route === "/explore" ? <BsCompassFill /> : <BsCompass />}</a>
-              </Link>
-            </ActionItem>
-            <ActionItem>
-              <span>{showHeartModal ? <BsHeartFill /> : <BsHeart />}</span>
-            </ActionItem>
-            <ActionItem>
-              <Link href={"/market"}>
-                <a>{Router.route === "/market" ? <BsFillBagFill /> : <BsBag />}</a>
-              </Link>
-            </ActionItem>
-            <UserAvartar onClick={onClickUserProfile}>{nickname.slice(0, 2).toUpperCase()}</UserAvartar>
-          </ActionItemWrapper>
-        </Container>
-      </Base>
-      <Menu show={showUserProfileMenu} style={style} onCloseModal={onCloseModal}>
-        <MenuItemWrapper bgColor={theme.colors.white} hoverColor={theme.colors.gray[50]}>
-          <MenuItem>
-            <Link href={`/${nickname}`}>
               <a>
-                <IoPersonCircleOutline />
-                프로필
+                {router.route === "/" ? <BsHouseDoorFill /> : <BsHouseDoor />}
               </a>
             </Link>
-          </MenuItem>
-
-          <MenuItem>
-            <Link href={`/${nickname}/saved`}>
+          </ActionItem>
+          <ActionItem>
+            <Link href={"/direct/inbox"}>
               <a>
-                <IoBookmarkOutline />
-                저장됨
+                {router.route === "/direct/inbox" ? (
+                  <IoPaperPlane />
+                ) : (
+                  <IoPaperPlaneOutline />
+                )}
               </a>
             </Link>
-          </MenuItem>
-          <MenuItem>
-            <Link href={"/accounts/edit"}>
-              <a>
-                <BsGear />
-                설정
-              </a>
-            </Link>
-          </MenuItem>
-          <MenuItem>
+          </ActionItem>
+          <ActionItem>
             <span>
-              <IoSync />
-              계정 전환
+              <BsPlusSquare />
             </span>
-          </MenuItem>
-          <MenuItem>
-            <span>로그아웃</span>
-          </MenuItem>
-        </MenuItemWrapper>
-      </Menu>
-    </>
+          </ActionItem>
+          <ActionItem>
+            <Link href={"/"}>
+              <a>
+                {router.route === "/explore" ? (
+                  <BsCompassFill />
+                ) : (
+                  <BsCompass />
+                )}
+              </a>
+            </Link>
+          </ActionItem>
+          <ActionItem onClick={onClickLikeMenu}>
+            <span>{showLikeMenu ? <BsHeartFill /> : <BsHeart />}</span>
+          </ActionItem>
+          <ActionItem>
+            <Link href={"/"}>
+              <a>{router.route === "/market" ? <BsBagFill /> : <BsBag />}</a>
+            </Link>
+          </ActionItem>
+          <UserProfile onClick={onClickUserProfileMenu}>
+            {userData.nickname.slice(0, 1).toUpperCase()}
+          </UserProfile>
+        </ActionItemWrapper>
+      </Container>
+      <UserProfileMenu show={showUserProfileMenu} onCloseModal={onCloseModal} />
+    </Base>
   );
 };
 

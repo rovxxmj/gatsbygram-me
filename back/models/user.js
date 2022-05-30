@@ -7,6 +7,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(30),
         allowNull: false,
       },
+      phone: {
+        type: DataTypes.STRING(30),
+        allowNull: true,
+      },
+      name: {
+        type: DataTypes.STRING(30),
+        allowNull: false,
+      },
       nickname: {
         type: DataTypes.STRING(30),
         allowNull: false,
@@ -15,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(100),
         allowNull: true,
       },
+
       bio: {
         type: DataTypes.TEXT,
         allowNull: true,

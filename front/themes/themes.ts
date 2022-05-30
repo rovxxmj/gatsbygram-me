@@ -27,6 +27,7 @@ export const light: Theme = {
     redLight: "#f8ab9e",
     green: "#61e8e1",
     greenLight: "#b4eeea",
+    blue: "#0295f6",
   },
 };
 
@@ -57,6 +58,7 @@ export const dark: Theme = {
     redLight: "#f8ab9e",
     green: "#61e8e1",
     greenLight: "#b4eeea",
+    blue: "#0295f6",
   },
 };
 

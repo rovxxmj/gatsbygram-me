@@ -1,31 +1,34 @@
-import React, { CSSProperties, FC, useCallback, useState } from "react";
-import { Base, Container } from "@components/Menu/styles";
-import { useRecoilState } from "recoil";
+import React, { FC, useCallback } from "react";
 
-export interface IMenu {
+interface IProps {
   children: React.ReactNode;
-  onCloseModal?: () => void;
-  onClick?: () => void;
   show: boolean;
-  baseBgColor?: CSSProperties;
-  style: CSSProperties;
+  onCloseModal: () => void;
 }
 
-const Menu: FC<IMenu> = ({ children, onCloseModal, show, baseBgColor, style }) => {
+import styled from "@emotion/styled";
+import { Container } from "@components/AppLayout";
+
+export const Base = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+`;
+
+const Menu: FC<IProps> = ({ children, show, onCloseModal }) => {
   const stopPropagation = useCallback((e: any) => {
     e.stopPropagation();
-    if (onCloseModal) onCloseModal();
+    // if (onCloseModal) onCloseModal();
   }, []);
 
   if (!show) return null;
 
   return (
-    <Base style={baseBgColor} onClick={onCloseModal}>
-      <Container>
-        <div onClick={stopPropagation} style={style}>
-          {children}
-        </div>
-      </Container>
+    <Base onClick={onCloseModal}>
+      <Container onClick={stopPropagation}>{children}</Container>
     </Base>
   );
 };

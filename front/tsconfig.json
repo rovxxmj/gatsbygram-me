@@ -25,7 +25,7 @@
       "@reducers/*": ["reducers/*"],
       "@store/*": ["store/*"],
       "@themes/*": ["themes/*"],
-      "@recoils/*": ["recoils/*"],
+      "@recoil/*": ["recoil/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
