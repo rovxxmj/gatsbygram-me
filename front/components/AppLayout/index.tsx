@@ -8,17 +8,15 @@ interface IProps {
   children: React.ReactNode;
 }
 
-export const Base = styled.div`
+export const Base = styled.div<{ bgColor?: string }>`
   width: 100vw;
-  height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: ${({ bgColor }) => bgColor};
 `;
 
-export const Main = styled.main<{ bgColor?: string }>`
-  width: 100%;
-  height: 100%;
-  background-color: ${({ bgColor }) => bgColor};
+export const Main = styled.main`
+  transform: translateY(68px);
 `;
 
 export const Container = styled.div`
@@ -32,13 +30,13 @@ const AppLayout: FC<IProps> = ({ children }) => {
   const router = useRouter();
   return (
     <ThemeProvider theme={light}>
-      <Base>
+      <Base bgColor={'#fafafa'}>
         {['/sign_in', '/sign_up'].includes(router.route) ? (
           <div>{children}</div>
         ) : (
           <>
             <Navigation />
-            <Main bgColor={'#fafafa'}>
+            <Main>
               <Container>{children}</Container>
             </Main>
           </>

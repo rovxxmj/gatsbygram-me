@@ -10,7 +10,9 @@ import { addPostAction, dummyPost } from '@reducers/post';
 import PostCard from '@components/PostCard';
 import { IPost } from '@typings/db';
 
-export const Base = styled.div``;
+export const Base = styled.div`
+  margin-top: 30px;
+`;
 
 const Home: NextPage = () => {
   const { isLoggedIn, me } = useSelector((state: IState) => state.user);
@@ -22,7 +24,6 @@ const Home: NextPage = () => {
   return (
     <Base>
       {mainPosts?.map((post: IPost, idx) => (
-        // <div key={idx}>{post.content}</div>
         <PostCard post={post} key={post.id} />
       ))}
       <button onClick={onClick}>업로드</button>

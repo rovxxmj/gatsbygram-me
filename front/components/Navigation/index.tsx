@@ -5,18 +5,14 @@ import {
   BsPlusSquare,
   BsHouseDoorFill,
   BsHouseDoor,
-  BsShopWindow,
-  BsFillBagFill,
   BsBag,
+  BsBagFill,
   BsCompass,
   BsCompassFill,
   BsHeartFill,
   BsHeart,
   BsGear,
   BsGearFill,
-  BsHandbagFill,
-  BsHandbag,
-  BsBagFill,
 } from 'react-icons/bs';
 import {
   IoPaperPlaneOutline,
@@ -39,19 +35,15 @@ import {
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import UserProfileMenu from '@components/Navigation/UserProfileMenu';
-import useSWR from 'swr';
-import fetcher from '@utils/fetcher';
-import { IUser } from '@typings/db';
 import {
+  Base,
   ActionItem,
   ActionItemWrapper,
-  Base,
   Container,
   Logo,
   SearchBox,
   UserProfile,
 } from '@components/Navigation/styles';
-import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { IState } from '@reducers/index';
 import MakePostModal from '@components/MakePostModal';

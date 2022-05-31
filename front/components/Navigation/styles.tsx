@@ -3,6 +3,12 @@ import styled from '@emotion/styled';
 export const Base = styled.div<{ borderColor: string }>`
   border-bottom: 1px solid ${({ borderColor }) => borderColor};
   height: 68px;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 `;
 export const Container = styled.div`
   max-width: 960px;

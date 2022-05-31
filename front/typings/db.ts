@@ -14,4 +14,6 @@ export interface IPost {
   content: string;
   Images: { src: string }[];
   Comments: { User: { nickname: string }; content: string }[];
+  createdAt: string;
+  updatedAt: string;
 }
