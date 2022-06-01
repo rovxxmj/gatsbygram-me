@@ -10,20 +10,21 @@ interface IProps {
 
 export const Base = styled.div<{ bgColor?: string }>`
   width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: ${({ bgColor }) => bgColor};
 `;
 
-export const Main = styled.main`
-  transform: translateY(68px);
-`;
+export const Main = styled.main``;
 
 export const Container = styled.div`
-  max-width: 960px;
-  margin: auto;
+  width: 960px;
+  margin: 68px auto auto auto;
   padding: 0 20px;
-  position: relative;
+  overflow-y: scroll;
+  //position: relative;
+  //background-color: gray;
 `;
 
 const AppLayout: FC<IProps> = ({ children }) => {
@@ -36,9 +37,7 @@ const AppLayout: FC<IProps> = ({ children }) => {
         ) : (
           <>
             <Navigation />
-            <Main>
-              <Container>{children}</Container>
-            </Main>
+            <Container>{children}</Container>
           </>
         )}
       </Base>

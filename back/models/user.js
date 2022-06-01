@@ -5,12 +5,15 @@ module.exports = (sequelize, DataTypes) => {
       // id
       email: {
         type: DataTypes.STRING(30),
-        allowNull: false,
-      },
-      phone: {
-        type: DataTypes.STRING(30),
         allowNull: true,
+        unique: true, // null도 고유로 처리
       },
+      //
+      // phone: {
+      //   type: DataTypes.STRING(30),
+      //   allowNull: true,
+      //   unique: true,
+      // },
       name: {
         type: DataTypes.STRING(30),
         allowNull: false,
@@ -23,7 +26,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(100),
         allowNull: true,
       },
-
+      provider: {
+        type: DataTypes.STRING(10),
+        allowNull: false,
+        defaultValue: "local",
+      },
+      snsId: {
+        type: DataTypes.STRING(30),
+        allowNull: true,
+      },
       bio: {
         type: DataTypes.TEXT,
         allowNull: true,
@@ -42,8 +53,13 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      charset: "utf8",
+      charset: "utf8", // 한글 지원
       collate: "utf8_general_ci",
+      timestamps: true, // 생성, 수정, 삭제 일 기록
+      paranoid: true, // 삭제 데이터 보관(deletedAt Col)
+      underscored: false,
+      modelName: "User",
+      tableName: "users",
     }
   );
 

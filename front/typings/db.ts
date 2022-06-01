@@ -1,4 +1,5 @@
 export interface IUser {
+  id: number;
   email: string;
   phone?: string;
   name: string;
@@ -16,4 +17,5 @@ export interface IPost {
   Comments: { User: { nickname: string }; content: string }[];
   createdAt: string;
   updatedAt: string;
+  location?: string;
 }

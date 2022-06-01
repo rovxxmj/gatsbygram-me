@@ -67,7 +67,7 @@ export const dummyPost = {
   id: 3,
   content: 'This is dummy',
   User: {
-    id: 3,
+    id: 1,
     nickname: 'rovxxmj',
   },
   location: 'seoul, korea',

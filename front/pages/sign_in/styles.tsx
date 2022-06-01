@@ -10,8 +10,7 @@ export const Base = styled.div`
 
 export const Container = styled.div`
   width: 420px;
-  min-height: 500px;
-  padding: 20px;
+  padding: 30px 20px;
   display: flex;
   flex-direction: column;
   border-radius: 4px;
@@ -20,8 +19,23 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-size: 22px;
   margin-bottom: 20px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+
+  > h1 {
+    font-size: 22px;
+  }
+
+  > span {
+    font-size: 13px;
+    font-weight: 500;
+
+    > a {
+      text-decoration: underline;
+    }
+  }
 `;
 
 export const Form = styled.form`
@@ -42,9 +56,9 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   border: 1px solid #dfdfdf;
-  padding: 12px;
+  padding: 14px;
   border-radius: 4px;
-
+  font-size: 15px;
   &:focus {
     outline: none;
   }

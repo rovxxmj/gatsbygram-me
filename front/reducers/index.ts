@@ -7,7 +7,7 @@ import post from './post';
 export interface IState {
   user: {
     isLoggedIn: boolean;
-    me: { email: string; password: string } | null;
+    me: { id: number; email: string; password: string } | null;
     signUpData: {};
     loginData: {};
   };
@@ -18,7 +18,7 @@ export interface IState {
   };
 }
 
-export const loginAction = (data: { email: string; password: string }) => ({ type: 'LOG_IN', data });
+export const loginAction = (data: { id: number; email: string; password: string }) => ({ type: 'LOG_IN', data });
 
 // action -> dispatch -> reducer => state change!
 // (이전 상태, 액션) => 다음 상태

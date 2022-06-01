@@ -16,6 +16,7 @@ export const MenuItemWrapper = styled.ul`
   position: absolute;
   top: 55px;
   right: 0;
+  z-index: 1000;
   width: 200px;
   border-radius: 5px;
   background-color: white;
@@ -58,7 +59,7 @@ const UserProfileMenu: FC<IProps> = ({ show, onCloseModal }) => {
           </Link>
         </MenuItem>
         <MenuItem hoverColor={theme.colors.gray[50]}>
-          <Link href="/[nickname]/saved">
+          <Link href={`/${me?.email}/saved`}>
             <a>저장됨</a>
           </Link>
         </MenuItem>

@@ -1,23 +1,28 @@
 const passport = require("passport");
 const local = require("./local");
+const kakao = require("./kakao");
 const { User } = require("../models");
 
 // 여러 로그인 전략을 관리
 module.exports = () => {
-  // 서버 세션에는 로그인 id 만 저장.
+  // 서버 세션에는 user.id 저장.
   passport.serializeUser((user, done) => {
-    done(null, user.id);
+    return done(null, user.id);
   });
 
-  // 나중에 복원 시 아이디로 나머지 세션 정보 추출, 로그인 후 계속 실행.
+  // 로그인 후 복원 시 아이디로 전체 정보 추출
+  // app.use(passport.session(());
+  // {id: 3, 'connect.sid': ...}
   passport.deserializeUser(async (id, done) => {
     try {
       const user = await User.findOne({ where: { id } });
-      done(null, user); // req.user;
+      return done(null, user); // req.user
     } catch (error) {
       console.error(error);
-      done(error);
+      return done(error);
     }
   });
+
   local();
+  kakao();
 };

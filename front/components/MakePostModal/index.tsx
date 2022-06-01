@@ -10,6 +10,8 @@ import Modal from '@components/Modal';
 import { set } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { IState } from '@reducers/index';
+import MessageModal from '@components/MakePostModal/MessageModal';
+
 export const ModalContentWrapper = styled.div`
   position: absolute;
   top: 50%;
@@ -21,6 +23,7 @@ export const ModalContentWrapper = styled.div`
   border-radius: 10px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
 
 export const Title = styled.div`
@@ -44,15 +47,35 @@ export const Form = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transform: translateY(-40px);
+
+  > label {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    > p,
+    span {
+      transform: translateY(-40px);
+    }
+  }
 `;
 
 const MakePostModal: FC<IProps> = ({ show, onCloseModal }) => {
   const [image, setImage] = useState('');
+  const [showAddImage, setShowAddImage] = useState(false);
   const { imagePaths } = useSelector((state: IState) => state.post); // 사진 미리보기
   const inputRef = useRef(null);
   const onChangeImage = useCallback((e: any) => {
     setImage(e.target.files[0]);
+    setShowAddImage(true);
+    onCloseModal();
+  }, []);
+
+  const onCloseModalInner = useCallback(() => {
+    setShowAddImage(false);
   }, []);
 
   // const onClickSelect = useCallback(() => {
@@ -60,18 +83,34 @@ const MakePostModal: FC<IProps> = ({ show, onCloseModal }) => {
   // }, [inputRef.current]);
 
   return (
-    <Modal show={show} onCloseModal={onCloseModal}>
-      <ModalContentWrapper>
-        <Title>새 게시물 만들기</Title>
-        <FileDropper>
-          <Form>
-            <p>사진과 동영상을 여기에 끌어다 놓으세요</p>
-            <input type={'file'} onChange={onChangeImage} value={image} ref={inputRef} />
-            {/*<button onClick={onClickSelect}>컴퓨터에서 선택</button>*/}
-          </Form>
-        </FileDropper>
-      </ModalContentWrapper>
-    </Modal>
+    <>
+      <Modal show={show} onCloseModal={onCloseModal}>
+        <ModalContentWrapper>
+          <Title>새 게시물 만들기</Title>
+          <FileDropper>
+            <Form>
+              <label>
+                <p>사진과 동영상을 여기에 끌어다 놓으세요</p>
+                <input hidden type={'file'} onChange={onChangeImage} value={image} ref={inputRef} />
+              </label>
+            </Form>
+          </FileDropper>
+        </ModalContentWrapper>
+      </Modal>
+      <MessageModal
+        show={showAddImage}
+        onCloseModal={onCloseModalInner}
+        title={'게시물을 삭제하시겠어요?'}
+        subTitle={'지금 나가면 수정 내용이 저장되지 않습니다.'}
+        accept={'삭제'}
+        cancel={'취소'}
+      >
+        <ModalContentWrapper>
+          <Title>게시물 올리기</Title>
+          <FileDropper></FileDropper>
+        </ModalContentWrapper>
+      </MessageModal>
+    </>
   );
 };
 

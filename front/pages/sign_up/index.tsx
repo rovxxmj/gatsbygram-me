@@ -7,6 +7,9 @@ import { useCallback } from 'react';
 import { Base, Button, Container, Form, Input, Label, Title } from '@pages/sign_in/styles';
 import axios from '@utils/axios';
 import Router from 'next/router';
+import AniLabel from '@pages/sign_in/AniLabel';
+import Link from 'next/link';
+import { useTheme } from '@emotion/react';
 
 interface IForm {
   email: string;
@@ -19,6 +22,7 @@ interface IForm {
   birth?: string;
 }
 const SignUp: NextPage = () => {
+  const theme = useTheme();
   const {
     register,
     handleSubmit,
@@ -34,6 +38,8 @@ const SignUp: NextPage = () => {
     },
     mode: 'onChange',
   });
+
+  const { email, name, nickname, password } = watch();
   const onSubmit = useCallback((data: IForm) => {
     axios
       .post('/api/users', data)
@@ -46,24 +52,28 @@ const SignUp: NextPage = () => {
   return (
     <Base>
       <Container>
-        <Title>회원가입</Title>
+        <Title>
+          <h1>가입하기</h1>
+          <span>
+            <Link href={'/sign_in'}>
+              <a style={{ color: theme.colors.blue }}>로그인</a>
+            </Link>
+            으로 이동하기
+          </span>
+        </Title>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <Label>
-            <span>이메일 주소</span>
-            <Input type={'text'} placeholder={'이메일'} {...register('email')} autoComplete={'off'} />
-          </Label>
-          <Label>
-            <span>성명</span>
-            <Input type={'text'} placeholder={'name'} {...register('name')} autoComplete={'off'} />
-          </Label>
-          <Label>
-            <span>사용자 이름</span>
-            <Input type={'text'} placeholder={'nickname'} {...register('nickname')} autoComplete={'off'} />
-          </Label>
-          <Label>
-            <span>비밀번호</span>
-            <Input type={'password'} placeholder={'password'} {...register('password')} autoComplete={'off'} />
-          </Label>
+          <AniLabel title={'이메일'} isValue={Boolean(email)}>
+            <Input type={'text'} {...register('email')} autoComplete={'off'} />
+          </AniLabel>
+          <AniLabel title={'성명'} isValue={Boolean(name)}>
+            <Input type={'text'} {...register('name')} autoComplete={'off'} />
+          </AniLabel>
+          <AniLabel title={'사용자이름'} isValue={Boolean(nickname)}>
+            <Input type={'text'} {...register('nickname')} autoComplete={'off'} />
+          </AniLabel>
+          <AniLabel title={'비밀번호'} isValue={Boolean(password)}>
+            <Input type={'password'} {...register('password')} autoComplete={'off'} />
+          </AniLabel>
           <Button type={'submit'}>가입하기</Button>
         </Form>
       </Container>

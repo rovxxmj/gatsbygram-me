@@ -39,7 +39,7 @@ import {
   Base,
   ActionItem,
   ActionItemWrapper,
-  Container,
+  // Container,
   Logo,
   SearchBox,
   UserProfile,
@@ -47,6 +47,24 @@ import {
 import { useSelector } from 'react-redux';
 import { IState } from '@reducers/index';
 import MakePostModal from '@components/MakePostModal';
+import useSWR from 'swr';
+import axios from 'axios';
+
+const Container = styled.div`
+  max-width: 960px;
+  margin: auto;
+  height: 100%;
+  padding: 0 20px;
+  display: flex;
+
+  > div,
+  ul {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+`;
 
 const Navigation = () => {
   const theme = useTheme();
@@ -70,49 +88,51 @@ const Navigation = () => {
   }, []);
 
   return (
-    <Base borderColor={theme.colors.gray[100]}>
-      <Container>
-        <Logo>
-          <Link href={'/'}>
-            <a>Gatsbygram</a>
-          </Link>
-        </Logo>
-        <SearchBox>Search box..</SearchBox>
-        <ActionItemWrapper>
-          <ActionItem>
+    <>
+      <Base borderColor={theme.colors.gray[100]}>
+        <Container>
+          <Logo>
             <Link href={'/'}>
-              <a>{router.route === '/' ? <BsHouseDoorFill /> : <BsHouseDoor />}</a>
+              <a>Gatsbygram</a>
             </Link>
-          </ActionItem>
-          <ActionItem>
-            <Link href={'/direct/inbox'}>
-              <a>{router.route === '/direct/inbox' ? <IoPaperPlane /> : <IoPaperPlaneOutline />}</a>
-            </Link>
-          </ActionItem>
-          <ActionItem onClick={onClickMakePostModal}>
-            <span>
-              <BsPlusSquare />
-            </span>
-          </ActionItem>
-          <ActionItem>
-            <Link href={'/'}>
-              <a>{router.route === '/explore' ? <BsCompassFill /> : <BsCompass />}</a>
-            </Link>
-          </ActionItem>
-          <ActionItem onClick={onClickLikeMenu}>
-            <span>{showLikeMenu ? <BsHeartFill /> : <BsHeart />}</span>
-          </ActionItem>
-          <ActionItem>
-            <Link href={'/'}>
-              <a>{router.route === '/market' ? <BsBagFill /> : <BsBag />}</a>
-            </Link>
-          </ActionItem>
-          <UserProfile onClick={onClickUserProfileMenu}>{me?.email.slice(0, 1).toUpperCase()}</UserProfile>
-        </ActionItemWrapper>
-      </Container>
+          </Logo>
+          <SearchBox>Search box..</SearchBox>
+          <ActionItemWrapper>
+            <ActionItem>
+              <Link href={'/'}>
+                <a>{router.route === '/' ? <BsHouseDoorFill /> : <BsHouseDoor />}</a>
+              </Link>
+            </ActionItem>
+            <ActionItem>
+              <Link href={'/direct/inbox'}>
+                <a>{router.route === '/direct/inbox' ? <IoPaperPlane /> : <IoPaperPlaneOutline />}</a>
+              </Link>
+            </ActionItem>
+            <ActionItem onClick={onClickMakePostModal}>
+              <span>
+                <BsPlusSquare />
+              </span>
+            </ActionItem>
+            <ActionItem>
+              <Link href={'/'}>
+                <a>{router.route === '/explore' ? <BsCompassFill /> : <BsCompass />}</a>
+              </Link>
+            </ActionItem>
+            <ActionItem onClick={onClickLikeMenu}>
+              <span>{showLikeMenu ? <BsHeartFill /> : <BsHeart />}</span>
+            </ActionItem>
+            <ActionItem>
+              <Link href={'/'}>
+                <a>{router.route === '/market' ? <BsBagFill /> : <BsBag />}</a>
+              </Link>
+            </ActionItem>
+            <UserProfile onClick={onClickUserProfileMenu}>{me?.email.slice(0, 1).toUpperCase()}</UserProfile>
+          </ActionItemWrapper>
+        </Container>
+      </Base>
       <UserProfileMenu show={showUserProfileMenu} onCloseModal={onCloseModal} />
       <MakePostModal show={showMakePostModal} onCloseModal={onCloseModal} />
-    </Base>
+    </>
   );
 };
 

@@ -6,10 +6,19 @@ module.exports = (sequelize, DataTypes) => {
       content: {
         type: DataTypes.TEXT,
       },
+      location: {
+        type: DataTypes.STRING(50),
+        allowNull: true,
+      },
     },
     {
-      charset: "utf8mb4",
+      charset: "utf8mb4", // 이모티콘 저장
       collate: "utf8mb4_general_ci",
+      timestamps: true, // 생성, 수정, 삭제 일 기록
+      underscored: false,
+      paranoid: false,
+      modelName: "Post",
+      tableName: "posts",
     }
   );
 

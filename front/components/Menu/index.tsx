@@ -7,7 +7,7 @@ interface IProps {
 }
 
 import styled from '@emotion/styled';
-import { Container } from '@components/AppLayout';
+// import { Container } from '@components/AppLayout';
 
 export const Base = styled.div`
   position: absolute;
@@ -16,6 +16,12 @@ export const Base = styled.div`
   right: 0;
   bottom: 0;
   z-index: 1000;
+`;
+
+export const Container = styled.div`
+  max-width: 960px;
+  margin: auto;
+  position: relative;
 `;
 
 const Menu: FC<IProps> = ({ children, show, onCloseModal }) => {

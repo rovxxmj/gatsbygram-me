@@ -11,6 +11,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       charset: "utf8",
       collate: "utf8_general_ci",
+      timestamps: true,
+      underscored: false,
+      paranoid: false,
+      modelName: "Video",
+      tableName: "videos",
     }
   );
 
