@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import Modal from '@components/Modal';
 
 interface IProps {
@@ -13,7 +13,8 @@ interface IProps {
 
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
-
+import { useRecoilState } from 'recoil';
+import { isModalShow } from '@recoil/atoms';
 export const ModalContentWrapper = styled.div`
   position: absolute;
   top: 50%;
@@ -63,6 +64,7 @@ export const Button = styled.div<{ color?: string }>`
 const MessageModal: FC<IProps> = ({ children, show, onCloseModal, title, subTitle, accept, cancel }) => {
   const theme = useTheme();
   const [showMessage, setShowMessage] = useState(false);
+  const [showPostModal, setShowPostModal] = useRecoilState(isModalShow);
   const onCloseMessage = useCallback(() => {
     setShowMessage(false);
   }, []);
@@ -74,20 +76,29 @@ const MessageModal: FC<IProps> = ({ children, show, onCloseModal, title, subTitl
     onCloseModal();
     onCloseMessage();
   }, []);
+
   return (
     <>
       <Modal show={show} onCloseModal={onShowMessage}>
         {children}
       </Modal>
       {/* message 모달 */}
-      <Modal show={showMessage} onCloseModal={onCloseMessage}>
+      <Modal show={showMessage} onCloseModal={onCloseMessage} style={'transparent'}>
         <ModalContentWrapper>
           <div className={'titles'}>
             <Title>{title}</Title>
             <SubTitle color={theme.colors.gray[400]}>{subTitle}</SubTitle>
           </div>
           <div className={'buttons'}>
-            <Button color={theme.colors.red}>{accept}</Button>
+            <Button
+              color={theme.colors.red}
+              onClick={() => {
+                onCloseBoth();
+                setShowPostModal(true);
+              }}
+            >
+              {accept}
+            </Button>
             <Button onClick={onCloseMessage}>{cancel}</Button>
           </div>
         </ModalContentWrapper>

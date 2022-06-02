@@ -27,6 +27,8 @@ import PostModal from '@components/PostModal';
 import CommentForm from '@components/PostCard/CommentForm';
 import MoreSettingsMenu from '@components/PostCard/MoreSettingsMenu';
 import UserInfoHeader from '@components/PostCard/UserInfoHeader';
+import PostImages from '@components/PostCard/PostImages';
+import PostcardContent from '@components/PostCard/PostcardContent';
 interface IProps {
   post: IPost;
 }
@@ -59,7 +61,9 @@ const PostCard: FC<IProps> = ({ post }) => {
     <>
       <Base bgColor={theme.colors.bgColor} borderColor={theme.colors.border}>
         <UserInfoHeader onClickMoreSettingsMenu={onClickMoreSettings} post={post} style={{ height: '60px' }} />
-        <ImageWrapper></ImageWrapper>
+        <ImageWrapper>
+          <PostImages images={post.Images} />
+        </ImageWrapper>
         {/* 포스트 내용 */}
         <ImageInfoWrapper>
           <ActionItemWrapper>
@@ -78,7 +82,7 @@ const PostCard: FC<IProps> = ({ post }) => {
                 </span>
               </PostActionItem>
             </div>
-            <div className={'mid'}>...</div>
+            <div className={'mid'}></div>
             <div className={'right'}>
               <PostActionItem>
                 <span>
@@ -93,7 +97,11 @@ const PostCard: FC<IProps> = ({ post }) => {
             </Likes>
             <Content>
               <span className={'nickname'}>{post.User.nickname}</span>
-              {showMoreContent ? post.content : `${post.content.slice(0, 30)}...`}
+              {showMoreContent ? (
+                <PostcardContent content={post.content} />
+              ) : (
+                <PostcardContent content={post.content.slice(0, 30)} />
+              )}
               <span className={'see-more'} onClick={onClickSeeMoreContent}>
                 {showMoreContent ? '접기' : '더보기'}
               </span>

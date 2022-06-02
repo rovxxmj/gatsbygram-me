@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
 import {
@@ -49,6 +49,10 @@ import { IState } from '@reducers/index';
 import MakePostModal from '@components/MakePostModal';
 import useSWR from 'swr';
 import axios from 'axios';
+import { create } from 'domain';
+import { useRecoilState } from 'recoil';
+import { isModalShow } from '@recoil/atoms';
+import PostFormModal from '@components/PostFormModal';
 
 const Container = styled.div`
   max-width: 960px;
@@ -72,7 +76,7 @@ const Navigation = () => {
   const { isLoggedIn, me } = useSelector((state: IState) => state.user);
   const [showLikeMenu, setShowLikeMenu] = useState(false);
   const [showUserProfileMenu, setShowUserProfileMenu] = useState(false);
-  const [showMakePostModal, setShowMakePostModal] = useState(false);
+  const [showMakePostModal, setShowMakePostModal] = useRecoilState(isModalShow);
   const onCloseModal = useCallback(() => {
     setShowUserProfileMenu(false);
     setShowMakePostModal(false);
@@ -83,10 +87,10 @@ const Navigation = () => {
   const onClickMakePostModal = useCallback(() => {
     setShowMakePostModal((prev) => !prev);
   }, []);
+
   const onClickLikeMenu = useCallback(() => {
     setShowLikeMenu((prev) => !prev);
   }, []);
-
   return (
     <>
       <Base borderColor={theme.colors.gray[100]}>
@@ -131,7 +135,8 @@ const Navigation = () => {
         </Container>
       </Base>
       <UserProfileMenu show={showUserProfileMenu} onCloseModal={onCloseModal} />
-      <MakePostModal show={showMakePostModal} onCloseModal={onCloseModal} />
+      {/*<MakePostModal show={showMakePostModal} onCloseModal={onCloseModal} />*/}
+      <PostFormModal show={showMakePostModal} onCloseModal={onCloseModal} />
     </>
   );
 };

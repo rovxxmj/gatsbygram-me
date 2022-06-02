@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { ActionItem } from '@components/Navigation/styles';
 
 export const Base = styled.div<{ bgColor: string; borderColor: string }>`
-  width: 470px;
+  max-width: 470px;
   border-radius: 7px;
   border: 1px solid ${({ borderColor }) => borderColor};
   background-color: ${({ bgColor }) => bgColor};
@@ -21,8 +21,8 @@ export const MoreMenu = styled.div`
 `;
 
 export const ImageWrapper = styled.div`
-  height: 470px;
-  background-color: #fafafa;
+  max-height: 470px;
+  //background-color: #fafafa;
 `;
 
 export const ImageInfoWrapper = styled.div`

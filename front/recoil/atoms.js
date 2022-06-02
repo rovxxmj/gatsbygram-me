@@ -4,3 +4,8 @@ import { atom } from 'recoil';
 //   key: 'isDarkKey',
 //   default: false,
 // });
+
+export const isModalShow = atom({
+  key: 'isModalShowAtom',
+  default: false,
+});

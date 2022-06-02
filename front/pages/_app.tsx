@@ -3,13 +3,15 @@ import type { AppProps } from 'next/app';
 import AppLayout from '@components/AppLayout';
 import wrapper from '@store/configureStore';
 import { RecoilRoot } from 'recoil';
-
+import ErrorBoundary from '../ErrorBoundary';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
-      <AppLayout>
-        <Component {...pageProps} />
-      </AppLayout>
+      <ErrorBoundary>
+        <AppLayout>
+          <Component {...pageProps} />
+        </AppLayout>
+      </ErrorBoundary>
     </RecoilRoot>
   );
 }

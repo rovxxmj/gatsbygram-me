@@ -10,6 +10,7 @@ import { addPostAction, dummyPost } from '@reducers/post';
 import PostCard from '@components/PostCard';
 import { IPost } from '@typings/db';
 import { Container } from '@components/AppLayout';
+import PostFormModal from '@components/PostFormModal';
 
 export const Base = styled.div`
   //width: 960px;
@@ -24,8 +25,6 @@ const Home: NextPage = () => {
   }, []);
   return (
     <Base>
-      <button onClick={onClick}>업로드</button>
-
       {mainPosts?.map((post: IPost, idx) => (
         <PostCard post={post} key={post.id} />
       ))}
