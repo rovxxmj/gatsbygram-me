@@ -1,19 +1,17 @@
 module.exports = (sequelize, DataTypes) => {
+  // 테이블명(users)
   const User = sequelize.define(
     "User",
     {
-      // id
+      // id는 자동으로 설정됨
       email: {
         type: DataTypes.STRING(30),
         allowNull: true,
-        unique: true, // null도 고유로 처리
       },
-      //
-      // phone: {
-      //   type: DataTypes.STRING(30),
-      //   allowNull: true,
-      //   unique: true,
-      // },
+      phone: {
+        type: DataTypes.STRING(30),
+        allowNull: true,
+      },
       name: {
         type: DataTypes.STRING(30),
         allowNull: false,
@@ -21,64 +19,44 @@ module.exports = (sequelize, DataTypes) => {
       nickname: {
         type: DataTypes.STRING(30),
         allowNull: false,
+        unique: true,
       },
       password: {
         type: DataTypes.STRING(100),
         allowNull: true,
       },
-      provider: {
-        type: DataTypes.STRING(10),
-        allowNull: false,
-        defaultValue: "local",
-      },
-      snsId: {
-        type: DataTypes.STRING(30),
+      avartar: {
+        type: DataTypes.STRING(100),
         allowNull: true,
       },
       bio: {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      gender: {
-        type: DataTypes.STRING(6),
-        allowNull: true,
-      },
-      birth: {
-        type: DataTypes.STRING(30),
-        allowNull: true,
-      },
-      thumbnailImageSrc: {
-        type: DataTypes.STRING(100),
-        allowNull: true,
+      snsId: {
+        type: DataTypes.STRING(50),
       },
     },
     {
-      charset: "utf8", // 한글 지원
+      charset: "utf8",
       collate: "utf8_general_ci",
-      timestamps: true, // 생성, 수정, 삭제 일 기록
-      paranoid: true, // 삭제 데이터 보관(deletedAt Col)
-      underscored: false,
-      modelName: "User",
-      tableName: "users",
     }
   );
-
   User.associate = (db) => {
-    db.User.hasMany(db.Post);
+    db.User.hasMany(db.Hashtag);
     db.User.hasMany(db.Comment);
     db.User.belongsToMany(db.User, {
-      through: "Follow", // 중간 테이블 명 변경
+      through: "Follow",
+      foreignKey: "followingId",
       as: "Followers",
-      foreignKey: "FollowingId",
     });
     db.User.belongsToMany(db.User, {
       through: "Follow",
+      foreignKey: "followerId",
       as: "Followings",
-      foreignKey: "FollowerId",
     });
+    db.User.hasMany(db.Post); // as로 별칭 구분 , through - 중간테이블명
     db.User.belongsToMany(db.Post, { through: "Like", as: "Liked" });
-
-    return User;
   };
   return User;
 };

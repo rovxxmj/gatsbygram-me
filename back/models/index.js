@@ -1,9 +1,8 @@
 const Sequelize = require("sequelize");
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
-const db = {};
+const db = [];
 
-// sequelize => node 와 Mysql 연결
 const sequelize = new Sequelize(
   config.database,
   config.username,
@@ -11,13 +10,14 @@ const sequelize = new Sequelize(
   config
 );
 
+db.Comment = require("./comment")(sequelize, Sequelize);
 db.User = require("./user")(sequelize, Sequelize);
 db.Post = require("./post")(sequelize, Sequelize);
+db.Hashtag = require("./hashtag")(sequelize, Sequelize);
 db.Image = require("./image")(sequelize, Sequelize);
 db.Video = require("./video")(sequelize, Sequelize);
-db.Comment = require("./comment")(sequelize, Sequelize);
-db.Hashtag = require("./hashtag")(sequelize, Sequelize);
-db.Dm = require("./dm")(sequelize, Sequelize);
+db.AuthToken = require("./authToken")(sequelize, Sequelize);
+db.Token = require("./token")(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
