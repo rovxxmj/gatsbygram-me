@@ -4,7 +4,6 @@ const { Op } = require("sequelize");
 const passport = require("passport");
 const { User, AuthToken, Post } = require("../../../models");
 const { REG_PHONE, REG_EMAIL } = require("../../../utils");
-const { toJSON } = require("express-session/session/cookie"); // db.User, db.AuthToken
 
 const router = express.Router();
 
@@ -70,33 +69,36 @@ router.post("/confirm", async (req, res, next) => {
 });
 
 // 인증 토큰 재전송(변경)
-router.post("/resend", async (req, res, next) => {
+router.post("/confirm-token/resend", async (req, res, next) => {
   const { nickname } = req.session.prepUser;
   const payload = Math.floor(100000 + Math.random() * 900000) + "";
-  AuthToken.update(
-    { payload },
-    {
-      where: { nickname },
-      returning: true,
-      plain: true,
-    }
-  )
-    .then(() => {
-      const newToken = AuthToken.findOne({
-        where: { payload, nickname },
-      });
-      console.log(newToken);
-      return res.status(200).send("ok");
-    })
-    .catch((error) => {
-      console.log(error);
-      next(error);
+
+  try {
+    await AuthToken.update(
+      { payload },
+      {
+        where: { nickname },
+        // returning: true,
+        // plain: true,
+      }
+    );
+
+    const newToken = await AuthToken.findOne({
+      where: { payload, nickname },
     });
+
+    console.log(newToken);
+    return res.status(200).send("ok");
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
 });
 
 // 로그인
 router.post("/login", (req, res, next) => {
   const { username } = req.body;
+  // 재시도 시, 성공 ? login
   passport.authenticate("local", async (err, user, info) => {
     // 서버 에러
     if (err) {
@@ -109,6 +111,7 @@ router.post("/login", (req, res, next) => {
     }
 
     // 여기까지 왔으면 로그인 성공한 것! => 로그인 유저 정보 반환하기.
+    // 이 로직 나중에 수정할 것. -> 조건
     const allAccountsWithoutPassword = await User.findAll({
       where: { [Op.and]: [{ email: user.email }, { phone: user.phone }] },
       attributes: ["id", "nickname"],
@@ -140,7 +143,7 @@ router.post("/login", (req, res, next) => {
       (REG_PHONE.test(username) || REG_EMAIL.test(username));
 
     if (condition) {
-      return res.status(200).send(allAccountsWithoutPassword)
+      return res.status(200).send(allAccountsWithoutPassword);
     }
 
     return req.login(user, (loginErr) => {

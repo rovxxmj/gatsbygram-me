@@ -23,10 +23,9 @@
 - then: "ok"
 - catch: false (403 Error)
 
-### POST /api/users/resend
+### POST /api/users/confirm-token/resend
 - 인증 토큰 재전송
 - then: "ok"
-
 
 ### POST /api/users/login
 - 로그인
@@ -37,6 +36,8 @@
   - else 계정이 2개 이상이거나 username(인증 방식) 이 email 또는 phone 일 경우, 
   - IUser[]
 - catch: "unExist"(존재하지 않는 사용자) || "unMatch"(잘못된 비밀번호)
+
+
 
 ### POST /api/users/logout
 - 로그아웃
