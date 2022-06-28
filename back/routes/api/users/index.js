@@ -1,7 +1,10 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const { Op } = require("sequelize");
 const passport = require("passport");
-const { User, AuthToken, Post } = require("../../../models"); // db.User, db.AuthToken
+const { User, AuthToken, Post } = require("../../../models");
+const { REG_PHONE, REG_EMAIL } = require("../../../utils");
+const { toJSON } = require("express-session/session/cookie"); // db.User, db.AuthToken
 
 const router = express.Router();
 
@@ -27,10 +30,10 @@ router.post("/", async (req, res, next) => {
   try {
     const existingUser = await User.findOne({ where: { nickname } });
     if (existingUser) {
-      return res.status(403).send("이미 사용중인 닉네임입니다."); //403 - 클라이언트 오류 & 금지
+      return res.status(403).send(false); //403 - 클라이언트 오류 & 금지
     }
     const payload = Math.floor(100000 + Math.random() * 900000) + "";
-    const authToken = await AuthToken.create({ payload });
+    const authToken = await AuthToken.create({ payload, nickname });
     console.log(authToken);
     return res.status(200).json({ email, phone, nickname });
   } catch (error) {
@@ -39,13 +42,13 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-// 유저 이메일, 전화번호 인증
+// 인증 토큰 확인
 router.post("/confirm", async (req, res, next) => {
   const { payload } = req.body;
   const { email, phone, name, nickname, password } = req.session.prepUser;
 
   try {
-    const exists = await AuthToken.findOne({ where: { payload } });
+    const exists = await AuthToken.findOne({ where: { payload, nickname } });
     if (!exists) {
       return res.status(403).send(false);
     }
@@ -66,10 +69,35 @@ router.post("/confirm", async (req, res, next) => {
   }
 });
 
-// 로그인
+// 인증 토큰 재전송(변경)
+router.post("/resend", async (req, res, next) => {
+  const { nickname } = req.session.prepUser;
+  const payload = Math.floor(100000 + Math.random() * 900000) + "";
+  AuthToken.update(
+    { payload },
+    {
+      where: { nickname },
+      returning: true,
+      plain: true,
+    }
+  )
+    .then(() => {
+      const newToken = AuthToken.findOne({
+        where: { payload, nickname },
+      });
+      console.log(newToken);
+      return res.status(200).send("ok");
+    })
+    .catch((error) => {
+      console.log(error);
+      next(error);
+    });
+});
 
+// 로그인
 router.post("/login", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
+  const { username } = req.body;
+  passport.authenticate("local", async (err, user, info) => {
     // 서버 에러
     if (err) {
       console.error(err);
@@ -80,34 +108,56 @@ router.post("/login", (req, res, next) => {
       return res.status(401).send(info.reason); // 401 - 허가되지 않음
     }
 
-    return req.login(user, async (loginErr) => {
+    // 여기까지 왔으면 로그인 성공한 것! => 로그인 유저 정보 반환하기.
+    const allAccountsWithoutPassword = await User.findAll({
+      where: { [Op.and]: [{ email: user.email }, { phone: user.phone }] },
+      attributes: ["id", "nickname"],
+    });
+
+    console.log(allAccountsWithoutPassword);
+    const allTargetUserWithoutPassword = await User.findOne({
+      where: { id: user.id },
+      attributes: {
+        exclude: ["password"],
+      },
+      include: [
+        {
+          model: Post,
+        },
+        {
+          model: User,
+          as: "Followers",
+        },
+        {
+          model: User,
+          as: "Followings",
+        },
+      ],
+    });
+
+    const condition =
+      allAccountsWithoutPassword.length > 1 &&
+      (REG_PHONE.test(username) || REG_EMAIL.test(username));
+
+    if (condition) {
+      return res.status(200).send(allAccountsWithoutPassword)
+    }
+
+    return req.login(user, (loginErr) => {
       if (loginErr) {
         console.error(loginErr);
         return next(loginErr);
       }
 
-      const fullUserWithoutPassword = await User.findOne({
-        where: { id: user.id },
-        attributes: {
-          exclude: ["password"],
-        },
-        include: [
-          {
-            model: Post,
-          },
-          {
-            model: User,
-            as: "Followers",
-          },
-          {
-            model: User,
-            as: "Followings",
-          },
-        ],
-      });
+      const result = {
+        user: allTargetUserWithoutPassword,
+        accounts: allAccountsWithoutPassword.filter(
+          (v) => v.id !== allTargetUserWithoutPassword.id
+        ),
+      };
 
-      // console.log(fullUserWithoutPassword);
-      return res.status(200).json(fullUserWithoutPassword); // 성공 시 사용자 정보 넘겨주기.
+      console.log(result);
+      return res.status(200).send(result);
     });
   })(req, res, next);
 });

@@ -43,6 +43,7 @@ const LoginModal: FC<IProps> = ({ show, onCloseModal }) => {
       .post('/api/users/login', data, { withCredentials: true })
       .then((res) => {
         console.log(res.data);
+        reset();
         onCloseModal();
       })
       .catch((error) => {
@@ -64,14 +65,14 @@ const LoginModal: FC<IProps> = ({ show, onCloseModal }) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Input
               type={'text'}
-              label={'이메일 또는 전화번호'}
+              label={'이메일, 사용자 이름 또는 전화번호'}
               isValue={Boolean(username)}
               isInValid={Boolean(errors.username) || Boolean(errors.username?.message)}
               register={register('username', {
                 required: true,
-                validate: {
-                  checkForm: (value) => REG_EMAIL.test(value) || REG_PHONE.test(value),
-                },
+                // validate: {
+                //   checkForm: (value) => REG_EMAIL.test(value) || REG_PHONE.test(value),
+                // },
               })}
             />
             <Input

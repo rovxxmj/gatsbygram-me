@@ -11,6 +11,7 @@ export interface IUser {
   Posts: [];
   Followers: IUser[];
   Followings: IUser[];
+  accounts: { id: number; nickname: string }[];
 }
 
 // export interface IUserWithOnline extends IUser {

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import Input from '@components/Input';
 import { Button } from '@components/Navigation/LoginModal/styles';
 import { useFormContext } from 'react-hook-form';
@@ -6,6 +6,7 @@ import Header from '@pages/SignIn/Header';
 import UndoButton from '@pages/SignUp/UndoButton';
 import useMutation from '@hooks/useMutation';
 import { IMutationResult } from '@pages/SignUp';
+import axios from 'axios';
 
 interface IProps {
   onClickUndo: () => void;
@@ -28,6 +29,16 @@ const AuthInput: FC<IProps> = ({ onClickUndo, prepUser }) => {
   } = useFormContext();
 
   const { payload } = watch();
+  const onClickResend = useCallback(() => {
+    axios
+      .post('/api/users/resend')
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
   return (
     <>
       <Header
@@ -44,7 +55,7 @@ const AuthInput: FC<IProps> = ({ onClickUndo, prepUser }) => {
           validate: { formCheck: (value) => /[0-9]{6}$/.test(value) },
         })}
       />
-
+      <span onClick={onClickResend}>다시 전송하기</span>
       <Button type={'submit'} disabled={!payload || Boolean(errors.payload)}>
         {loading ? '로딩중...' : '확인'}
       </Button>

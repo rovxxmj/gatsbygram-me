@@ -83,7 +83,10 @@ const Navigation = () => {
   const onLogout = useCallback(() => {
     axios
       .post('/api/users/logout', { withCredentials: true })
-      .then((res) => console.log(res.data))
+      .then((res) => {
+        console.log(res.data);
+        mutate();
+      })
       .catch((error) => console.error(error));
   }, []);
   return (

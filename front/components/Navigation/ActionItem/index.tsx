@@ -21,7 +21,7 @@ const Base = styled.div<{ special?: boolean }>`
     & svg {
        border-radius: 30%;
        font-size: 30px;
-       background: linear-gradient(45deg, #feda75, #fa7e1e , #d62976, #962fbf, #4f5bd5)
+       // background: linear-gradient(45deg, #feda75, #fa7e1e , #d62976, #962fbf, #4f5bd5)
   }
   `}
 `;
