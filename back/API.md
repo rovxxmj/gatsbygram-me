@@ -32,9 +32,9 @@
 - body: { username: string, password: string }
 - then
   - if 계정이 1개거나 username(인증 방식) 이 nickname 일 경우, 
-  - {user: IUser, accounts: {id: number, nickname: string}[]}
+  - {single: true, user: IUser, accounts: {id: number, nickname: string}[]}
   - else 계정이 2개 이상이거나 username(인증 방식) 이 email 또는 phone 일 경우, 
-  - IUser[]
+  - {single: false, users: IUser[]}
 - catch: "unExist"(존재하지 않는 사용자) || "unMatch"(잘못된 비밀번호)
 
 

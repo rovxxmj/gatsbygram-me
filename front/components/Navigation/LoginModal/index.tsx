@@ -1,16 +1,18 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import Modal from '@components/Modal';
 import CloseButton from '@components/CloseButton';
 import { useTheme } from '@emotion/react';
 import Logo from '@components/Logo';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { Button, Container, LinkContainer } from '@components/Navigation/LoginModal/styles';
 import Socials from '@components/Navigation/LoginModal/Socials';
 import axios from 'axios';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
+import { IUser } from '@typings/db';
+import SelectAccountsModal from '@pages/SignIn/SelectAccountsModal';
 
 interface IProps {
   show: boolean;
@@ -26,30 +28,65 @@ export const REG_PHONE = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/i;
 
 const LoginModal: FC<IProps> = ({ show, onCloseModal }) => {
   const theme = useTheme();
+  const { data: userData, error, mutate } = useSWR<IUser>('/api/users/me', fetcher);
+  const [accounts, setAccounts] = useState([]);
+  const [showSelectAccountsModal, setShowSelectAccountsModal] = useState(false);
   const {
     register,
     handleSubmit,
     watch,
     resetField,
     reset,
+    setError,
     formState: { errors },
   } = useForm<IForm>({
     defaultValues: { username: '', password: '' },
     mode: 'onChange',
   });
   const { username, password } = watch();
+  // const onSubmit = useCallback((data: IForm) => {
+  //   axios
+  //     .post('/api/users/login', data, { withCredentials: true })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       reset();
+  //       onCloseModal();
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // }, []);
+
   const onSubmit = useCallback((data: IForm) => {
+    const submitData = {
+      username: data.username.replaceAll('-', ''),
+      password: data.password,
+    };
+
+    console.log(submitData);
+
     axios
-      .post('/api/users/login', data, { withCredentials: true })
+      .post('/api/users/login', submitData)
       .then((res) => {
+        if (!res.data.single) {
+          setAccounts(res.data.users);
+          setShowSelectAccountsModal(true);
+        }
         console.log(res.data);
         reset();
-        onCloseModal();
+        // onCloseModal();
+        mutate();
       })
       .catch((error) => {
         console.error(error);
+        setError('password', { message: '잘못된 비밀번호 입니다.' });
       });
+
+    console.log(accounts);
   }, []);
+  // if (!userData) return <div>로딩중...</div>;
+
+  if (userData) return <Redirect to={'/'} />;
 
   return (
     <Modal show={show} onCloseModal={onCloseModal} style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
@@ -98,6 +135,7 @@ const LoginModal: FC<IProps> = ({ show, onCloseModal }) => {
           <Socials title={'간편 로그인'} />
         </div>
       </Container>
+      <SelectAccountsModal accounts={accounts} show={showSelectAccountsModal} onCloseModal={onCloseModal} />
     </Modal>
   );
 };

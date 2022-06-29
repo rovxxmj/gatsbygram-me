@@ -31,7 +31,7 @@ const AuthInput: FC<IProps> = ({ onClickUndo, prepUser }) => {
   const { payload } = watch();
   const onClickResend = useCallback(() => {
     axios
-      .post('/api/users/confirm-token/resend')
+      .post('/api/users/ -token/resend')
       .then((res) => {
         console.log(res.data);
       })

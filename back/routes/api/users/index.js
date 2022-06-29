@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 const passport = require("passport");
 const { User, AuthToken, Post } = require("../../../models");
 const { REG_PHONE, REG_EMAIL } = require("../../../utils");
+const { isLoggedIn, isNotLoggedIn } = require("../../middlewares");
 
 const router = express.Router();
 
@@ -14,11 +15,11 @@ router.get("/me", (req, res, next) => {
 });
 
 // 유저 생성
-router.post("/", async (req, res, next) => {
+router.post("/", isNotLoggedIn, async (req, res, next) => {
   const { auth, name, nickname, password } = req.body;
   let email = null;
   let phone = null;
-  if (auth.indexOf("@") > -1) {
+  if (auth.indexOf("@") !== -1) {
     email = auth;
   } else {
     phone = auth;
@@ -42,7 +43,7 @@ router.post("/", async (req, res, next) => {
 });
 
 // 인증 토큰 확인
-router.post("/confirm", async (req, res, next) => {
+router.post("/confirm", isNotLoggedIn, async (req, res, next) => {
   const { payload } = req.body;
   const { email, phone, name, nickname, password } = req.session.prepUser;
 
@@ -96,7 +97,7 @@ router.post("/confirm-token/resend", async (req, res, next) => {
 });
 
 // 로그인
-router.post("/login", (req, res, next) => {
+router.post("/login", isNotLoggedIn, (req, res, next) => {
   const { username } = req.body;
   // 재시도 시, 성공 ? login
   passport.authenticate("local", async (err, user, info) => {
@@ -114,7 +115,6 @@ router.post("/login", (req, res, next) => {
     // 이 로직 나중에 수정할 것. -> 조건
     const allAccountsWithoutPassword = await User.findAll({
       where: { [Op.and]: [{ email: user.email }, { phone: user.phone }] },
-      attributes: ["id", "nickname"],
     });
 
     console.log(allAccountsWithoutPassword);
@@ -143,7 +143,9 @@ router.post("/login", (req, res, next) => {
       (REG_PHONE.test(username) || REG_EMAIL.test(username));
 
     if (condition) {
-      return res.status(200).send(allAccountsWithoutPassword);
+      return res
+        .status(200)
+        .send({ single: false, users: allAccountsWithoutPassword });
     }
 
     return req.login(user, (loginErr) => {
@@ -152,12 +154,21 @@ router.post("/login", (req, res, next) => {
         return next(loginErr);
       }
 
-      const result = {
-        user: allTargetUserWithoutPassword,
-        accounts: allAccountsWithoutPassword.filter(
-          (v) => v.id !== allTargetUserWithoutPassword.id
-        ),
-      };
+      const accounts = allAccountsWithoutPassword.filter(
+        (v) => v.id !== allTargetUserWithoutPassword.id
+      );
+
+      const result =
+        accounts.length > 1
+          ? {
+              single: true,
+              user: allTargetUserWithoutPassword,
+              accounts,
+            }
+          : {
+              single: true,
+              user: allTargetUserWithoutPassword,
+            };
 
       console.log(result);
       return res.status(200).send(result);
@@ -165,7 +176,7 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
-router.post("/logout", (req, res, next) => {
+router.post("/logout", isLoggedIn, (req, res, next) => {
   req.logout((error) => {
     if (error) return next(error);
     req.session.destroy();

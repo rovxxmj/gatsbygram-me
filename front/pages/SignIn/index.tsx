@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { useTheme } from '@emotion/react';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
@@ -12,8 +12,9 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
+import SelectAccountsModal from '@pages/SignIn/SelectAccountsModal';
 
-interface IForm {
+export interface IForm {
   username: string;
   password: string;
 }
@@ -25,7 +26,9 @@ export interface IRest {
 const SignIn = () => {
   const theme = useTheme();
   const { data: userData, error, mutate } = useSWR<IUser>('/api/users/me', fetcher);
-  console.log(userData);
+  console.log({ userData });
+  const [accounts, setAccounts] = useState([]);
+  const [showSelectAccountsModal, setShowSelectAccountsModal] = useState(false);
   const {
     register,
     handleSubmit,
@@ -39,22 +42,36 @@ const SignIn = () => {
     mode: 'onChange',
   });
   const { username, password } = watch();
+
+  const onCloseModal = useCallback(() => {
+    setShowSelectAccountsModal(false);
+  }, []);
+
   const onSubmit = useCallback((data: IForm) => {
     const submitData = {
       username: data.username.replaceAll('-', ''),
       password: data.password,
     };
 
+    console.log(submitData);
+
     axios
-      .post('/api/users/login', submitData, { withCredentials: true })
+      .post('/api/users/login', submitData)
       .then((res) => {
+        if (!res.data.single) {
+          setAccounts(res.data.users);
+          setShowSelectAccountsModal(true);
+        }
         console.log(res.data);
+        // reset();
         mutate();
       })
       .catch((error) => {
         console.error(error);
         setError('password', { message: '잘못된 비밀번호 입니다.' });
       });
+
+    console.log(accounts);
   }, []);
 
   // if (!userData) return <div>로딩중...</div>;
@@ -98,6 +115,7 @@ const SignIn = () => {
           <Socials title={'간편 로그인'} />
         </div>
       </SignInContainer>
+      <SelectAccountsModal accounts={accounts} show={showSelectAccountsModal} onCloseModal={onCloseModal} />
     </div>
   );
 };

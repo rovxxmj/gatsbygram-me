@@ -15,7 +15,7 @@ module.exports = () => {
         passReqToCallback: true,
       },
       async (req, username, password, done) => {
-        if (username.indexOf("@" ) !== -1) {
+        if (username.indexOf("@") !== -1) {
           criteria = {
             email: username,
           };
@@ -30,15 +30,15 @@ module.exports = () => {
         }
 
         try {
-          const user = await User.findOne({where: {...criteria}});
+          const user = await User.findOne({ where: { ...criteria } });
           if (!user) {
             return done(null, false, { reason: "unExist" }); // (서버 에러, 성공, 클라이언트 에러)
           }
           const match = await bcrypt.compare(password, user.password);
-          if (!match) {
+          const instead = password === user.password;
+          if (!match && !instead) {
             return done(null, false, { reason: "unMatch" });
           }
-
           return done(null, user); // 성공 시 사용자 정보 넘겨주기.
         } catch (error) {
           console.error("❌ Server error", error);
