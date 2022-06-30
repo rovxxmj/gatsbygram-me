@@ -44,18 +44,6 @@ const LoginModal: FC<IProps> = ({ show, onCloseModal }) => {
     mode: 'onChange',
   });
   const { username, password } = watch();
-  // const onSubmit = useCallback((data: IForm) => {
-  //   axios
-  //     .post('/api/users/login', data, { withCredentials: true })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       reset();
-  //       onCloseModal();
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // }, []);
 
   const onSubmit = useCallback((data: IForm) => {
     const submitData = {
@@ -63,19 +51,16 @@ const LoginModal: FC<IProps> = ({ show, onCloseModal }) => {
       password: data.password,
     };
 
-    console.log(submitData);
-
     axios
       .post('/api/users/login', submitData)
       .then((res) => {
-        if (!res.data.single) {
-          setAccounts(res.data.users);
+        if (!res.data.currentAccount) {
+          setAccounts(res.data.totalAccounts);
           setShowSelectAccountsModal(true);
         }
         console.log(res.data);
-        reset();
-        // onCloseModal();
         mutate();
+        reset();
       })
       .catch((error) => {
         console.error(error);
@@ -135,7 +120,12 @@ const LoginModal: FC<IProps> = ({ show, onCloseModal }) => {
           <Socials title={'간편 로그인'} />
         </div>
       </Container>
-      <SelectAccountsModal accounts={accounts} show={showSelectAccountsModal} onCloseModal={onCloseModal} />
+      <SelectAccountsModal
+        accounts={accounts}
+        setAccounts={setAccounts}
+        show={showSelectAccountsModal}
+        onCloseModal={onCloseModal}
+      />
     </Modal>
   );
 };

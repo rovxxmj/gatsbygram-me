@@ -1,6 +1,6 @@
 ## REST API
 
-## /users
+## /users (유저)
 
 ### GET /api/users/:id
 - 해당 유저(id) 정보
@@ -32,9 +32,9 @@
 - body: { username: string, password: string }
 - then
   - if 계정이 1개거나 username(인증 방식) 이 nickname 일 경우, 
-  - {single: true, user: IUser, accounts: {id: number, nickname: string}[]}
+  - {currentAccount: IUser, additionalAccounts: {id: number, nickname: string}[]}
   - else 계정이 2개 이상이거나 username(인증 방식) 이 email 또는 phone 일 경우, 
-  - {single: false, users: IUser[]}
+  - {currentAccount: false, totalAccounts: IUser[]}
 - catch: "unExist"(존재하지 않는 사용자) || "unMatch"(잘못된 비밀번호)
 
 
@@ -43,3 +43,19 @@
 - 로그아웃
 - then: "ok"
 
+
+## /post (게시물)
+
+### POST /api/posts 
+- 게시물 생성
+// 사진/동영상, hashtag, 댓글작성 여부 설정, content
+- 
+- body: { content: string, hashtag: string[]}
+
+### POST /api/posts/:postId/comments
+- 댓글 작성
+- body: { content: string, userId: string, postId: string}
+
+### POST /api/posts/:postId/comments/:commentId
+- 대댓글 작성
+- body: { content: string, postId: string, replyingUserId: string, repliedUserId: string}

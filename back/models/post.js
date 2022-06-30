@@ -33,8 +33,9 @@ module.exports = (sequelize, DataTypes) => {
     db.Post.hasMany(db.Video);
     db.Post.hasMany(db.Comment);
     db.Post.belongsToMany(db.Hashtag, { through: "PostHashtag" });
+    db.Post.belongsToMany(db.Mention, { through: "PostMention" });
     db.Post.belongsTo(db.User); // as로 구별
-    db.Post.belongsToMany(db.User, { through: "Like", as: "Likers" });
+    db.Post.belongsToMany(db.User, { through: "Like", as: "Liker" });
     db.Post.belongsTo(db.Post, { as: "Retweet" });
   };
   return Post;

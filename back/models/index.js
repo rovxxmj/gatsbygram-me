@@ -18,6 +18,7 @@ db.Image = require("./image")(sequelize, Sequelize);
 db.Video = require("./video")(sequelize, Sequelize);
 db.AuthToken = require("./authToken")(sequelize, Sequelize);
 db.Token = require("./token")(sequelize, Sequelize);
+db.Mention = require("./mention")(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

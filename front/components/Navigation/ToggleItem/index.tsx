@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 
 interface IActionItem {
   icons?: { fill: React.ReactNode; empty: React.ReactNode };
+  icon?: React.ReactNode;
   special?: boolean;
-  route: string;
   onClick?: () => void;
   [key: string]: any;
 }
@@ -30,7 +30,7 @@ const Base = styled.div<{ special?: boolean }>`
   }
   `}
 `;
-const ActionItem: FC<IActionItem> = ({ icons, icon, special, onClick, route, rest }) => {
+const ToggleItem: FC<IActionItem> = ({ icons, icon, special, onClick, rest }) => {
   const [state, setState] = useState(false);
   const { pathname } = useLocation();
   const onClickItem = useCallback(() => {
@@ -39,10 +39,9 @@ const ActionItem: FC<IActionItem> = ({ icons, icon, special, onClick, route, res
   }, []);
   return (
     <Base special={special} onClick={onClickItem} {...rest}>
-      {/*<Link to={route}>{match && route !== '/' ? icons?.fill : icons?.empty}</Link>*/}
-      <Link to={route}>{route === pathname ? icons?.fill : icons?.empty}</Link>
+      {icon ? icon : state ? icons?.fill : icons?.empty}
     </Base>
   );
 };
 
-export default ActionItem;
+export default ToggleItem;

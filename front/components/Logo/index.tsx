@@ -12,7 +12,7 @@ const Base = styled.h1`
   font-size: 24px;
 `;
 const Logo: FC<IProps> = ({ style }) => {
-  return <Base style={style}>Instagram</Base>;
+  return <Base style={style}>gatsbygram</Base>;
 };
 
 export default Logo;

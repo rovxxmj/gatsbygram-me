@@ -58,8 +58,8 @@ const SignIn = () => {
     axios
       .post('/api/users/login', submitData)
       .then((res) => {
-        if (!res.data.single) {
-          setAccounts(res.data.users);
+        if (!res.data.currentAccount) {
+          setAccounts(res.data.totalAccounts);
           setShowSelectAccountsModal(true);
         }
         console.log(res.data);
@@ -115,7 +115,14 @@ const SignIn = () => {
           <Socials title={'간편 로그인'} />
         </div>
       </SignInContainer>
-      <SelectAccountsModal accounts={accounts} show={showSelectAccountsModal} onCloseModal={onCloseModal} />
+      {accounts?.length > 1 && (
+        <SelectAccountsModal
+          accounts={accounts}
+          setAccounts={setAccounts}
+          show={showSelectAccountsModal}
+          onCloseModal={onCloseModal}
+        />
+      )}
     </div>
   );
 };

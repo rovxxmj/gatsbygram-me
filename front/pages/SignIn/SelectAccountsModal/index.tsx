@@ -6,20 +6,22 @@ import { IUser } from '@typings/db';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { IForm } from '..';
 import axios from 'axios';
+import useSWR from 'swr';
+import fetcher from '@utils/fetcher';
 
 interface IProps {
   show: boolean;
   onCloseModal: () => void;
   accounts: IUser[];
+  setAccounts: React.Dispatch<React.SetStateAction<any>>;
   [key: string]: any;
 }
 
 export const ModalContent = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   border: 1px solid gray;
   background-color: white;
   & h1 {
@@ -53,42 +55,47 @@ export const AccountItem = styled.button`
   font-size: 18px;
 `;
 
-const SelectAccountsModal: FC<IProps> = ({ show, onCloseModal, accounts, rest }) => {
+const SelectAccountsModal: FC<IProps> = ({ show, onCloseModal, accounts, setAccounts, rest }) => {
   const theme = useTheme();
-  console.log(accounts);
+  const { data: userData, error, mutate } = useSWR<IUser>('/api/users/me', fetcher);
+
   const [targetAccountIdx, setTargetAccountIdx] = useState(0);
   const onClickAccount = useCallback((idx) => {
     setTargetAccountIdx(idx);
   }, []);
-  const onSubmit = useCallback((e: any, accounts) => {
+
+  const onSubmit = useCallback((e: any, data) => {
     e.preventDefault();
-    const data = {
-      username: accounts[targetAccountIdx].nickname,
-      password: accounts[targetAccountIdx].password,
+    const submitData = {
+      username: data.nickname,
+      password: data.password,
     };
+
     axios
-      .post('/api/users/login', data)
+      .post('/api/users/login', submitData)
       .then((res) => {
         console.log(res.data);
         onCloseModal();
+        setAccounts([]);
+        mutate();
       })
       .catch((error) => console.error(error));
   }, []);
 
+  console.log({ accounts });
+  if (accounts === undefined || accounts?.length < 1) return null;
   return (
     <Modal show={show} onCloseModal={onCloseModal} style={{ backgroundColor: theme.colors.white }}>
       <ModalContent>
         <InnerLayout>
           <h1>Select an account</h1>
-          <form onSubmit={(e) => onSubmit(e, accounts)}>
+          <form onSubmit={(e) => onSubmit(e, accounts[targetAccountIdx])}>
             <ul>
-              {accounts
-                ? accounts.map((v, idx) => (
-                    <AccountItem key={v.id} type={'submit'} onClick={() => onClickAccount(idx)}>
-                      {v.nickname}
-                    </AccountItem>
-                  ))
-                : null}
+              {accounts?.map((v, idx) => (
+                <AccountItem key={`${v.id}${idx}`} type={'submit'} onClick={() => onClickAccount(idx)}>
+                  {v.nickname}
+                </AccountItem>
+              ))}
             </ul>
           </form>
         </InnerLayout>

@@ -18,13 +18,13 @@ module.exports = (sequelize, DataTypes) => {
     db.Comment.belongsTo(db.Post);
     db.Comment.belongsToMany(db.Comment, {
       through: "Reply",
-      as: "Replyings",
+      as: "Replying",
       foreignKey: "RepliedId",
     });
     db.Comment.belongsToMany(db.Comment, {
       through: "Reply",
       as: "Replied",
-      foreignKey: "ReplyingsId",
+      foreignKey: "ReplyingId",
     });
   };
   return Comment;
