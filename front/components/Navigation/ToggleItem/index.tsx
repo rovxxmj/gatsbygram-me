@@ -4,7 +4,7 @@ import { useRouteMatch, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 
 interface IActionItem {
-  icons?: { fill: React.ReactNode; empty: React.ReactNode };
+  icons?: { empty: React.ReactNode; fill: React.ReactNode };
   icon?: React.ReactNode;
   special?: boolean;
   onClick?: () => void;

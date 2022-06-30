@@ -57,7 +57,7 @@ export const AccountItem = styled.button`
 
 const SelectAccountsModal: FC<IProps> = ({ show, onCloseModal, accounts, setAccounts, rest }) => {
   const theme = useTheme();
-  const { data: userData, error, mutate } = useSWR<IUser>('/api/users/me', fetcher);
+  const { data: userData, error, mutate } = useSWR<IUser>('/api/user/me', fetcher);
 
   const [targetAccountIdx, setTargetAccountIdx] = useState(0);
   const onClickAccount = useCallback((idx) => {
@@ -72,7 +72,7 @@ const SelectAccountsModal: FC<IProps> = ({ show, onCloseModal, accounts, setAcco
     };
 
     axios
-      .post('/api/users/login', submitData)
+      .post('/api/user/login', submitData)
       .then((res) => {
         console.log(res.data);
         onCloseModal();
@@ -82,8 +82,8 @@ const SelectAccountsModal: FC<IProps> = ({ show, onCloseModal, accounts, setAcco
       .catch((error) => console.error(error));
   }, []);
 
-  console.log({ accounts });
   if (accounts === undefined || accounts?.length < 1) return null;
+
   return (
     <Modal show={show} onCloseModal={onCloseModal} style={{ backgroundColor: theme.colors.white }}>
       <ModalContent>

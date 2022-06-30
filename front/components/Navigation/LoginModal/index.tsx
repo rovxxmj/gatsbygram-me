@@ -28,7 +28,7 @@ export const REG_PHONE = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/i;
 
 const LoginModal: FC<IProps> = ({ show, onCloseModal }) => {
   const theme = useTheme();
-  const { data: userData, error, mutate } = useSWR<IUser>('/api/users/me', fetcher);
+  const { data: userData, error, mutate } = useSWR<IUser>('/api/user/me', fetcher);
   const [accounts, setAccounts] = useState([]);
   const [showSelectAccountsModal, setShowSelectAccountsModal] = useState(false);
   const {
@@ -52,7 +52,7 @@ const LoginModal: FC<IProps> = ({ show, onCloseModal }) => {
     };
 
     axios
-      .post('/api/users/login', submitData)
+      .post('/api/user/login', submitData)
       .then((res) => {
         if (!res.data.currentAccount) {
           setAccounts(res.data.totalAccounts);
@@ -109,7 +109,7 @@ const LoginModal: FC<IProps> = ({ show, onCloseModal }) => {
             </Button>
           </form>
           <LinkContainer>
-            <Link to={'/forgot_password'} onClick={onCloseModal}>
+            <Link to={'/find_password'} onClick={onCloseModal}>
               비밀번호 찾기
             </Link>
             <div className={'divider'}></div>

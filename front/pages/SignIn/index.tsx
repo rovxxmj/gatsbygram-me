@@ -4,7 +4,6 @@ import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
 import { Link, Redirect } from 'react-router-dom';
 import { Button, Container, LinkContainer } from '@components/Navigation/LoginModal/styles';
-import { REG_EMAIL, REG_PHONE } from '@components/Navigation/LoginModal';
 import { SignInContainer } from '@pages/SignIn/styles';
 import Socials from '@components/Navigation/LoginModal/Socials';
 import Header from '@pages/SignIn/Header';
@@ -25,7 +24,7 @@ export interface IRest {
 
 const SignIn = () => {
   const theme = useTheme();
-  const { data: userData, error, mutate } = useSWR<IUser>('/api/users/me', fetcher);
+  const { data: userData, error, mutate } = useSWR<IUser>('/api/user/me', fetcher);
   console.log({ userData });
   const [accounts, setAccounts] = useState([]);
   const [showSelectAccountsModal, setShowSelectAccountsModal] = useState(false);
@@ -56,7 +55,7 @@ const SignIn = () => {
     console.log(submitData);
 
     axios
-      .post('/api/users/login', submitData)
+      .post('/api/user/login', submitData)
       .then((res) => {
         if (!res.data.currentAccount) {
           setAccounts(res.data.totalAccounts);
@@ -108,7 +107,7 @@ const SignIn = () => {
             </Button>
           </form>
           <LinkContainer>
-            <Link to={'/forgot_password'}>비밀번호 찾기</Link>
+            <Link to={'/find_password'}>비밀번호 찾기</Link>
             <div className={'divider'}></div>
             <Link to={'/sign_up'}>회원가입</Link>
           </LinkContainer>

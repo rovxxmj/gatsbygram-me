@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import loadable from '@loadable/component';
 import { ThemeProvider } from '@emotion/react';
 import { theme } from '@themes/themes';
@@ -8,6 +8,9 @@ import styled from '@emotion/styled';
 const Home = loadable(() => import('@pages/Home'));
 const SignIn = loadable(() => import('@pages/SignIn'));
 const SignUp = loadable(() => import('@pages/SignUp'));
+const Direct = loadable(() => import('@pages/Direct'));
+const Explore = loadable(() => import('@pages/Explore'));
+const Profile = loadable(() => import('@pages/Profile'));
 
 const Base = styled.div<{ [key: string]: any }>`
   background-color: ${({ theme }) => theme.colors.gray[50]};
@@ -22,18 +25,19 @@ const Container = styled.div`
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <Base>
-          <Navigation />
-          <Container>
-            <Switch>
-              <Route exact path={'/'} component={Home} />
-              <Route path={'/sign_in'} component={SignIn} />
-              <Route path={'/sign_up'} component={SignUp} />
-            </Switch>
-          </Container>
-        </Base>
-      </BrowserRouter>
+      <Base>
+        <Navigation />
+        <Container>
+          <Switch>
+            <Route exact path={'/'} component={Home} />
+            <Route path={'/user/:id'} component={Profile} />
+            <Route path={'/sign_in'} component={SignIn} />
+            <Route path={'/sign_up'} component={SignUp} />
+            <Route path={'/explore'} component={Explore} />
+            <Route path={'/direct/inbox'} component={Direct} />
+          </Switch>
+        </Container>
+      </Base>
     </ThemeProvider>
   );
 };

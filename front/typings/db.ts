@@ -7,11 +7,29 @@ export interface IUser {
   avartar: string;
   bio: string;
   snsId: string;
-  createdAt: Date;
+  createdAt: string;
   Posts: [];
   Followers: IUser[];
   Followings: IUser[];
   Mentioned: [];
+}
+
+export interface IPost {
+  id: number;
+  User: IUser;
+  content: string;
+  createdAt: string;
+  uploadedAt: string;
+  Images: Object[];
+  Videos: Object[];
+  Hashtags: Object[];
+  Mentions: Object[];
+  Comments: Object[];
+  RetweetId: number;
+  UserId: number;
+  hideCounts: boolean;
+  location: boolean;
+  turnOffComments: boolean;
 }
 
 // export interface IUserWithOnline extends IUser {

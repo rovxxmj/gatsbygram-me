@@ -21,7 +21,7 @@ interface IReturn {
 }
 
 const AuthInput: FC<IProps> = ({ onClickUndo, prepUser }) => {
-  const [confirm, { loading, data: authToken, error }] = useMutation<IReturn>('/api/users/confirm');
+  const [confirm, { loading, data: authToken, error }] = useMutation<IReturn>('/api/user/confirm');
   const {
     register,
     watch,
@@ -31,7 +31,7 @@ const AuthInput: FC<IProps> = ({ onClickUndo, prepUser }) => {
   const { payload } = watch();
   const onClickResend = useCallback(() => {
     axios
-      .post('/api/users/ -token/resend')
+      .post('/api/user/confirm-token/resend')
       .then((res) => {
         console.log(res.data);
       })

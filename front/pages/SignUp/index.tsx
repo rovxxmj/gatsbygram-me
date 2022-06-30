@@ -64,7 +64,7 @@ const SignUp = () => {
     };
 
     axios
-      .post('/api/users', submitData, { withCredentials: true })
+      .post('/api/user', submitData, { withCredentials: true })
       .then((res) => {
         console.log(res.data);
         setShowBasic(false);
@@ -79,7 +79,7 @@ const SignUp = () => {
 
   const onSubmitAuth = useCallback(async (data: IAuth) => {
     axios
-      .post('/api/users/confirm', data, { withCredentials: true })
+      .post('/api/user/confirm', data, { withCredentials: true })
       .then((res) => {
         console.log(res.data);
         setShowAuth(false);

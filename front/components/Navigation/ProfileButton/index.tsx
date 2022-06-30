@@ -22,10 +22,10 @@ const Base = styled.button<{ special?: boolean }>`
 `;
 
 const ProfileButton: FC<IProps> = ({ onClick }) => {
-  const { data: userData, mutate, error } = useSWR<IUser | false>('/api/users/me', fetcher);
+  const { data: userData, mutate, error } = useSWR<IUser | false>('/api/user/me', fetcher);
   if (!userData) return null;
 
-  return <Base onClick={onClick}>{<img src={userData?.avartar || '/'} alt={userData?.nickname} />}</Base>;
+  return <Base onClick={onClick}>{<img src={userData?.avartar || '/'} />}</Base>;
 };
 
 export default ProfileButton;

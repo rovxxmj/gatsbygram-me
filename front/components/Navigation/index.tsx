@@ -80,7 +80,7 @@ export const Button = styled.div`
 `;
 
 const Navigation = () => {
-  const { data: userData, error, mutate } = useSWR<IUser | false>('/api/users/me', fetcher);
+  const { data: userData, error, mutate } = useSWR<IUser | false>('/api/user/me', fetcher);
   const theme = useTheme();
   const [showLogin, setShowLogin] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);

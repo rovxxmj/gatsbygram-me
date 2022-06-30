@@ -13,11 +13,11 @@ import { ProfileCard } from '@components/ProfileMenu/styles';
 
 const ProfileMenu: FC<IMenu> = ({ show, onCloseModal, style, rest }) => {
   const theme = useTheme();
-  const { data: userData, mutate, error } = useSWR<IUser>('/api/users/me', fetcher);
+  const { data: userData, mutate, error } = useSWR<IUser>('/api/user/me', fetcher);
 
   const onLogout = useCallback(() => {
     axios
-      .post('/api/users/logout')
+      .post('/api/user/logout')
       .then((res) => {
         console.log(res.data);
         mutate();
