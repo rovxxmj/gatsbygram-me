@@ -7,6 +7,7 @@ export interface IUser {
   avartar: string;
   bio: string;
   snsId: string;
+  provider: string;
   createdAt: string;
   Posts: [];
   Followers: IUser[];

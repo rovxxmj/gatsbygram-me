@@ -17,6 +17,11 @@
 - success: { email: string, phone: string, nickname: string }
 - fail: false (403 Error)
 
+### a (링크로 연결) /http:localhost:3095/oauth/kakao
+- 카카오로 로그인
+- success: redirect to '/'
+- ** api axios 로 가능한지는 추후 알아보고 수정할 예정
+
 ### POST /api/user/confirm 
 - 인증 토큰 submit
 - body: { payload: string }
@@ -63,5 +68,9 @@
 ## /posts (여러 게시물)
 
 ### GET /api/posts
-- 여러 게시물 랜덤으로 가져오기.
+- 여러 게시물 생성 순으로 가져오기.
+- success: IPost[]
+
+### GET /api/posts/followers 
+- 팔로잉하는 유저 게시물만 가져오기.
 - success: IPost[]

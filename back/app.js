@@ -11,12 +11,14 @@ const passport = require("passport");
 const passportConfig = require("./passport");
 
 const apiRouter = require("./routes/api");
+const oauthRouter = require("./routes/oauth");
+
 const db = require("./models");
 const app = express();
 app.set("PORT", process.env.PORT || 3095);
 
 db.sequelize
-  .sync()
+  .sync({ force: false })
   .then(() => console.log("✅ DB 연결 성공!!"))
   .catch((error) => console.error(error));
 
@@ -44,6 +46,7 @@ const sessionOption = {
 app.use(session(sessionOption));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use("/oauth", oauthRouter);
 app.use("/api", apiRouter);
 
 // 에러 페이지

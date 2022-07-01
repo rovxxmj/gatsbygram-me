@@ -12,6 +12,7 @@ const { isLoggedIn } = require("../../middlewares");
 const router = express.Router();
 
 router.post("/", async (req, res, next) => {
+  const { data } = useSWR("/api/user/me", fetcher);
   try {
     const post = await Post.create({
       content: req.body.content,
@@ -27,9 +28,9 @@ router.post("/", async (req, res, next) => {
         { model: Image },
         { model: Video },
         { model: Hashtag },
-        { model: User },
+        { model: User, attributes: ["id", "nickname"] },
         { model: Mention },
-        { model: Comment },
+        { model: Comment, include: [{ model: User }] },
       ],
     });
 
@@ -47,19 +48,27 @@ router.delete("/", (req, res, next) => {
 router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
   try {
     const existingPost = await Post.findOne({
-      where: { id: req.params.postId },
+      where: { id: parseInt(req.params.postId) },
     });
 
     if (!existingPost) {
       return res.status(403).send("존재하지 않는 게시글입니다.");
     }
+
+    // belongsTo 하는 경우에는 대상(hasMany 의 주체)의 id를 추가적으로 작성한다!
     const comment = await Comment.create({
       content: req.body.content,
-      PostId: req.params.postId,
+      PostId: parseInt(req.params.postId),
       UserId: req.user.id,
     });
 
-    return res.status(201).json(comment);
+    const fullComment = await Comment.findOne({
+      where: { id: comment.id },
+      attributes: { exclude: ["UserId"] },
+      include: [{ model: User, attributes: ["id", "nickname"] }],
+    });
+    console.log(fullComment);
+    return res.status(201).json(fullComment);
   } catch (error) {
     console.error(error);
     next(error);

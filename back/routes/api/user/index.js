@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
 const passport = require("passport");
 const { User, AuthToken, Post, Mention } = require("../../../models");
-const { REG_PHONE, REG_EMAIL } = require("../../../utils");
+const { REG_PHONE, REG_EMAIL } = require("../../../utils/reg");
 const { isLoggedIn, isNotLoggedIn } = require("../../middlewares");
 
 const router = express.Router();
@@ -142,6 +142,7 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
           { email: user.email, name: user.name },
           { phone: user.phone, name: user.name },
         ],
+        provider: "local",
       },
       attributes: ["id", "nickname", "password"],
     });

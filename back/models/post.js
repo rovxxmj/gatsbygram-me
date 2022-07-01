@@ -15,12 +15,12 @@ module.exports = (sequelize, DataTypes) => {
       hideCounts: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        default: false,
+        defaultValue: false,
       },
       turnOffComments: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        default: false,
+        defaultValue: false,
       },
     },
     {

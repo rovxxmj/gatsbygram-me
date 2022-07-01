@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const { Strategy: LocalStrategy } = require("passport-local");
 const { User } = require("../models");
 const { Op } = require("sequelize");
-const { REG_PHONE } = require("../utils");
+const { REG_PHONE } = require("../utils/reg");
 module.exports = () => {
   let criteria;
 
@@ -30,10 +30,16 @@ module.exports = () => {
         }
 
         try {
-          const user = await User.findOne({ where: { ...criteria } });
+          const user = await User.findOne({
+            where: {
+              ...criteria,
+              provider: "local",
+            },
+          });
           if (!user) {
             return done(null, false, { reason: "unExist" }); // (서버 에러, 성공, 클라이언트 에러)
           }
+
           const match = await bcrypt.compare(password, user.password);
           const instead = password === user.password;
           if (!match && !instead) {

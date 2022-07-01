@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       // id는 자동으로 설정됨
       payload: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING(6),
         // unique: true,
         allowNull: false,
       },
