@@ -1,15 +1,19 @@
 import React from 'react';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
-import { IPost } from '@typings/db';
+import { IPost, IUser } from '@typings/db';
+import Post from '@components/Post';
 
 const Home = () => {
-  const { data: postsData, mutate, error } = useSWR<IPost[]>('/api/posts', fetcher);
-  console.log(postsData);
+  const { data: userData, mutate: userDataMutate } = useSWR<IUser>('/api/user/me', fetcher);
+  const { data: postsData, mutate: postsDataMutate, error } = useSWR<IPost[]>(userData ? '/api/posts' : null, fetcher);
   return (
     <div>
-      <h1>홈</h1>
-      <ul></ul>
+      <ul>
+        {postsData?.map((v) => (
+          <Post key={v.id} dataSource={v} />
+        ))}
+      </ul>
     </div>
   );
 };

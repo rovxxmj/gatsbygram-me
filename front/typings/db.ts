@@ -20,11 +20,11 @@ export interface IPost {
   content: string;
   createdAt: string;
   uploadedAt: string;
-  Images: Object[];
+  Images: { id: number; src: string; PostId: number }[];
   Videos: Object[];
   Hashtags: Object[];
   Mentions: Object[];
-  Comments: Object[];
+  Comments: { id: number; content: string; UserId: number; PostId: number }[];
   RetweetId: number;
   UserId: number;
   hideCounts: boolean;
