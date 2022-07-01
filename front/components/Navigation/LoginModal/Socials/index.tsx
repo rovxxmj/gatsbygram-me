@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { IRest } from '@pages/SignIn';
 import { useTheme } from '@emotion/react';
 import Social from '@components/Navigation/LoginModal/Social';
 import { BsFillChatFill, BsGithub } from 'react-icons/bs';
 import { FaFacebookF } from 'react-icons/fa';
+import axios from 'axios';
 interface IProps {
   title: string;
 }
@@ -33,6 +34,16 @@ export const SocialContainer = styled.div<IRest>`
 `;
 const Socials: FC<IProps> = ({ title }) => {
   const theme = useTheme();
+  const onClickKakao = () => {
+    axios
+      .get('/oauth/kakao', { withCredentials: true })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   return (
     <SocialContainer>
       <div className={'divider'}>
@@ -40,8 +51,8 @@ const Socials: FC<IProps> = ({ title }) => {
       </div>
       <ul className={'buttons'}>
         <Social
+          route={'http://localhost:3095/oauth/kakao'}
           kakao
-          onClick={() => console.log('social')}
           icon={
             <div>
               <BsFillChatFill />
@@ -50,7 +61,7 @@ const Socials: FC<IProps> = ({ title }) => {
           style={{ backgroundColor: theme.colors.yellow[200] }}
         />
         <Social
-          onClick={() => console.log('social')}
+          route={'http://localhost:3090'}
           icon={
             <div>
               <FaFacebookF />
@@ -59,7 +70,7 @@ const Socials: FC<IProps> = ({ title }) => {
           style={{ backgroundColor: '#325ca6' }}
         />
         <Social
-          onClick={() => console.log('social')}
+          route={'http://localhost:3090'}
           icon={
             <div>
               <BsGithub />

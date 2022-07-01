@@ -12,9 +12,9 @@ interface IActionItem {
 }
 
 const Base = styled.div<{ special?: boolean }>`
-  width: 36px;
-  height: 36px;
-  margin-left: 6px;
+  width: 34px;
+  height: 34px;
+  margin-left: 10px;
   cursor: pointer;
   display: flex;
   justify-content: center;

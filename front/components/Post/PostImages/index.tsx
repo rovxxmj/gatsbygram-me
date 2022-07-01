@@ -28,7 +28,7 @@ const Images: FC<IProps> = ({ images }) => {
   return (
     <Base theme={theme} width={data.length * 470}>
       {data?.map((v) => (
-        <Image>{v.src}</Image>
+        <Image key={v.id}>{v.src}</Image>
       ))}
     </Base>
   );

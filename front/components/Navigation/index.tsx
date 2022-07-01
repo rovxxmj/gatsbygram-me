@@ -58,7 +58,7 @@ export const ActionItems = styled.div`
   position: relative;
 
   & button {
-    margin-left: 20px;
+    //margin-left: 20px;
   }
 `;
 export const Button = styled.div`
@@ -124,13 +124,14 @@ const Navigation = () => {
             {userData && (
               <>
                 <ActionItem route={'/'} icons={{ empty: <BsHouseDoor />, fill: <BsHouseDoorFill /> }} />
-                <ActionItem route={'/explore'} icons={{ empty: <MdOutlineExplore />, fill: <MdExplore /> }} />
                 <ActionItem
                   route={'/direct/inbox'}
                   icons={{ empty: <IoPaperPlaneOutline />, fill: <IoPaperPlane /> }}
                 />
-                <ToggleItem icons={{ empty: <IoHeartOutline />, fill: <IoHeart /> }} />
                 <ToggleItem special icon={<BsInstagram />} onClick={onClickPostMenu} />
+                <ActionItem route={'/explore'} icons={{ empty: <MdOutlineExplore />, fill: <MdExplore /> }} />
+
+                <ToggleItem icons={{ empty: <IoHeartOutline />, fill: <IoHeart /> }} />
                 <ProfileButton onClick={onClickProfileButton} />
               </>
             )}

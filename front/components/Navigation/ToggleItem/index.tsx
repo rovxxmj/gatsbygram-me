@@ -20,16 +20,19 @@ const Base = styled.div<{ special?: boolean }>`
   justify-content: center;
   align-items: center;
   font-size: 25px;
-  ${({ special }) =>
-    special &&
-    `
-    & svg {
-       border-radius: 30%;
-       font-size: 30px;
-       background: linear-gradient(45deg, #feda75, #fa7e1e , #d62976, #962fbf, #4f5bd5)
-  }
-  `}
 `;
+
+// ${({ special }) =>
+//   special &&
+//   `
+//   & svg {
+//      border-radius: 30%;
+//      font-size: 30px;
+//      background: linear-gradient(45deg, #feda75, #fa7e1e , #d62976, #962fbf, #4f5bd5)
+// }
+// `}
+// `;
+
 const ToggleItem: FC<IActionItem> = ({ icons, icon, special, onClick, rest }) => {
   const [state, setState] = useState(false);
   const { pathname } = useLocation();

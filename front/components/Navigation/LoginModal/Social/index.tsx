@@ -2,10 +2,11 @@ import React, { CSSProperties, FC } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
+import { Link } from 'react-router-dom';
 interface IProps {
   style?: CSSProperties;
   icon: React.ReactNode;
-  onClick: () => void;
+  route: string;
   [key: string]: any;
 }
 
@@ -25,11 +26,11 @@ const Button = styled.button<{ [key: string]: any }>`
     color: ${({ kakao, theme }) => (kakao ? '#21252b' : 'inherit')};
   }
 `;
-const Social: FC<IProps> = ({ style, icon, onClick, kakao }) => {
+const Social: FC<IProps> = ({ style, icon, route }) => {
   const theme = useTheme();
   return (
-    <Button style={style} onClick={onClick} kakao={kakao}>
-      {icon}
+    <Button style={style} kakao={route.indexOf('kakao') > -1}>
+      <a href={route}>{icon}</a>
     </Button>
   );
 };

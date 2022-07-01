@@ -5,6 +5,10 @@ import PostHeader from '@components/Post/PostHeader';
 import { useTheme } from '@emotion/react';
 import PostImages from '@components/Post/PostImages';
 import PostIcons from '@components/Post/PostIcons';
+import PostContent from '@components/Post/PostContent';
+import PostCommentForm from '@components/Post/PostCommentForm';
+import useSWR from 'swr';
+import fetcher from '@utils/fetcher';
 
 interface IProps {
   dataSource: IPost;
@@ -25,8 +29,8 @@ const Post: FC<IProps> = ({ dataSource }) => {
       <PostHeader user={dataSource.User} />
       <PostImages images={dataSource.Images} />
       <PostIcons />
-      content: {dataSource.content}
-      comment:
+      <PostContent post={dataSource} />
+      <PostCommentForm post={dataSource} />
     </Card>
   );
 };

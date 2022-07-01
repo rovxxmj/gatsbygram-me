@@ -10,15 +10,21 @@ interface IProps {
 }
 
 const Base = styled.button<{ special?: boolean }>`
-  width: 36px;
-  height: 36px;
-  margin-left: 4px;
+  width: 34px;
+  height: 34px;
+  margin-left: 10px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 50%;
   border: none;
+  overflow: hidden;
+
+  > img {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const ProfileButton: FC<IProps> = ({ onClick }) => {
