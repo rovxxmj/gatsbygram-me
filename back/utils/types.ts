@@ -15,7 +15,7 @@ export interface IUser {
   Mentioned: [];
 }
 
-// Object 로 표시된 곳은 더 자세한 객체로 바뀔 예정!
+// Object 로 표시된 곳은 더 구체적인 {key: value} 로 바뀔 예정!
 export interface IPost {
   id: number;
   User: IUser;

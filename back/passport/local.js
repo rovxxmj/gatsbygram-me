@@ -39,7 +39,6 @@ module.exports = () => {
           if (!user) {
             return done(null, false, { reason: "unExist" }); // (서버 에러, 성공, 클라이언트 에러)
           }
-
           const match = await bcrypt.compare(password, user.password);
           const instead = password === user.password;
           if (!match && !instead) {

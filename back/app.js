@@ -25,7 +25,9 @@ db.sequelize
 passportConfig();
 app.use(cors({ origin: "http://localhost:3090", credentials: true })); // 브라우저(3090) = 프론트 서버(3090) -> 백엔드 서버(3095) 포트(도메인) 일치시키기
 // credential - 쿠키 전달
-app.use(express.static(path.join(__dirname, "uploads")));
+app.use(express.static(path.join(__dirname, "public")));
+// 정적파일(이미지) 경로 설정 & 외부 노출
+app.use("/img", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -55,5 +57,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(app.get("PORT"), () =>
-  console.log(`✅ Server is listening on port ${app.get("PORT")}`)
+  console.log(`✅ Express 서버 실행중 'http://localhost:${app.get("PORT")}'`)
 );

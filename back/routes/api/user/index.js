@@ -22,7 +22,7 @@ router.get("/me", async (req, res, next) => {
           },
           { model: User, as: "Followings", attributes: ["id"] },
           { model: User, as: "Followers", attributes: ["id"] },
-          { model: User, as: "AdditionalAccounts", attributes: ["id"] },
+          { model: User, as: "MainAccount", attributes: ["id", "nickname"] },
           { model: Mention, as: "Mentioned", attributes: ["id"] },
         ],
       });
@@ -142,7 +142,7 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
           { email: user.email, name: user.name },
           { phone: user.phone, name: user.name },
         ],
-        provider: "local",
+        // provider: "local",
       },
       attributes: ["id", "nickname", "password"],
     });
@@ -155,7 +155,7 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
       include: [
         { model: User, as: "Followings", attributes: ["id"] },
         { model: User, as: "Followers", attributes: ["id"] },
-        { model: User, as: "AdditionalAccounts", attributes: ["id"] },
+        { model: User, as: "MainAccount", attributes: ["id", "nickname"] },
         { model: Mention, as: "Mentioned", attributes: ["id"] },
       ],
     });
@@ -167,8 +167,8 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
     // 계정 선택해야 할 때
     if (condition) {
       return res.status(200).send({
-        currentAccount: false,
-        totalAccounts: allAccountsWithoutPassword,
+        single: false,
+        myAccounts: allAccountsWithoutPassword,
       });
     }
 
@@ -181,15 +181,15 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
       const additionalAccounts = allAccountsWithoutPassword.filter(
         (v) => v.id !== allTargetUserWithoutPassword.id
       );
-
       const result =
         additionalAccounts.length >= 1
           ? {
-              currentAccount: allTargetUserWithoutPassword,
-              additionalAccounts,
+              single: true,
+              user: allTargetUserWithoutPassword,
             }
           : {
-              currentAccount: allTargetUserWithoutPassword,
+              single: true,
+              user: allTargetUserWithoutPassword,
             };
 
       return res.status(200).send(allTargetUserWithoutPassword);
@@ -198,11 +198,35 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
 });
 
 router.post("/logout", isLoggedIn, (req, res, next) => {
-  req.logout((error) => {
-    if (error) return next(error);
-    req.session.destroy();
-    return res.status(200).send("ok");
+  try {
+    req.logout((error) => {
+      if (error) return next(error);
+      req.session.destroy();
+      return res.status(200).send("ok");
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// 해당 유저
+router.post("/:nickname", isLoggedIn, async (req, res, next) => {
+  const { nickname } = req.params;
+  const user = await User.findOne({
+    where: { nickname },
+    attributes: { exclude: "password" },
+    include: [
+      {
+        model: Post,
+        attributes: ["id"],
+      },
+      { model: User, as: "Followings", attributes: ["id"] },
+      { model: User, as: "Followers", attributes: ["id"] },
+      { model: User, as: "MainAccount", attributes: ["id", "nickname"] },
+      { model: Mention, as: "Mentioned", attributes: ["id"] },
+    ],
   });
+  return res.status(200).send(user);
 });
 
 module.exports = router;

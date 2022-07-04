@@ -68,16 +68,17 @@ module.exports = (sequelize, DataTypes) => {
       as: "Mentioned",
     });
 
-    db.User.belongsToMany(db.User, {
-      through: "Account",
-      foreignKey: "mainAccountId",
-      as: "AdditionalAccounts",
-    });
-    db.User.belongsToMany(db.User, {
-      through: "Account",
-      foreignKey: "additionalAccountsId",
-      as: "MainAccount",
-    });
+    // db.User.belongsToMany(db.User, {
+    //   through: "Account",
+    //   foreignKey: "mainAccountId",
+    //   as: "AdditionalAccounts",
+    // });
+    // db.User.belongsTo(db.User, {
+    //   through: "Account",
+    //   foreignKey: "additionalAccountsId",
+    //   as: "MainAccount",
+    // });
+    db.User.belongsTo(db.User, { as: "MainAccount" });
   };
   return User;
 };

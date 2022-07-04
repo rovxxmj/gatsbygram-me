@@ -17,10 +17,11 @@
 - success: { email: string, phone: string, nickname: string }
 - fail: false (403 Error)
 
-### a (링크로 연결) /http:localhost:3095/oauth/kakao
-- 카카오로 로그인
-- success: redirect to '/'
+### a 태그 (링크로 연결) /http:localhost:3095/oauth/kakao
+- 카카오로 로그인 & 회원가입
+- success: redirect to `/`
 - ** api axios 로 가능한지는 추후 알아보고 수정할 예정
+- .env 에 `KAKAO_ID` 필요, 추후 공유할 예정
 
 ### POST /api/user/confirm 
 - 인증 토큰 submit
@@ -37,9 +38,9 @@
 - body: { username: string, password: string }
 - success
   - if 계정이 1개 or username(인증 방식) 이 nickname 일 경우(계정 선택이 불필요하여 바로 로그인 되는 경우), 
-  - { currentAccount: IUser, additionalAccounts: { id: number, nickname: string }[] }
+  - return IUser
   - else 계정이 2개 이상 && username(인증 방식) 이 email 또는 phone 일 경우(계정 선택이 필요하여 바로 로그인 되지 않는 경우, 
-  - { currentAccount: false, totalAccounts: IUser[] }
+  - return { single: false, myAccounts: IUser[] }
 - error: "unExist"(존재하지 않는 사용자) || "unMatch"(잘못된 비밀번호)
 
 
@@ -50,10 +51,18 @@
 
 ## /post (단일 게시물)
 
+### POST /api/post/img
+- 이미지 파일 전송
+- body: {IImage[]}
+- return: {src: string}[]
+- src 의 value 값은 `/img/파일명` 형태로, step 3에서 images 를 표현하기 위한 data 로 활용 가능하다.
+- content 롤 보낼 때 같이 보낼 것!!(아래 `POST /api/post` 참고)
+
 ### POST /api/post 
 - 게시물 생성
 - 사진/동영상, hashtag, 댓글작성 여부 설정, content
-- body: { content: string, hashtags: string[], mentions: string[], imageFiles: [], videoFiles: [], hideCounts: boolean, turnOffComments: boolean }
+✅ 아래 body 는 계속 수정될 예정 
+- body: { content: string, src: {src: string}[] hideCounts: boolean, turnOffComments: boolean }
 - hideCounts, turnOffComments 는 초기값(false)으로 설정되어 있음으로 값을 변경할 경우를 제외하고 body 에 포함하지 않도록 한다.
 
 
