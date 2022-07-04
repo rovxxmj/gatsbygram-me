@@ -1,4 +1,4 @@
-import React, { createContext, FC, useCallback, useState } from 'react';
+import React, { createContext, FC, SetStateAction, useCallback, useEffect, useState } from 'react';
 import Modal from '@components/Modal';
 import styled from '@emotion/styled';
 import Step from '@components/CreatePostModal/Step';
@@ -39,31 +39,26 @@ interface IForm {
   // mentions: string[]
 }
 
-interface IFormImage {
-  img: any;
+interface IImage {
+  src: string;
 }
 
 interface IContext {
+  images: IImage[];
+  setImages: React.Dispatch<React.SetStateAction<IImage[]>>;
   [key: string]: any;
 }
-export const PostContext = createContext<IContext | null>(null);
+export const PostContext = createContext<IContext>({ images: [], setImages: () => [] });
 
 const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [image, setImage] = useState(undefined);
-  const [src, setSrc] = useState('');
-  const [testImageSrc, setTestImageSrc] = useState('');
+  const [imageFiles, setImageFiles] = useState<any[]>([]);
+  const [images, setImages] = useState<{ src: string }[]>([]);
   const [percent, setPercent] = useState(0); // progressBar - width(%)
   const [showMessage, setShowMessage] = useState(false);
-  const postContextValue = {
-    testImageSrc,
-    setTestImageSrc,
-  };
+
   const { register, handleSubmit } = useForm<IForm>({
     defaultValues: { content: '', location: '', hideCounts: false, turnOffComments: false },
-  });
-  const { register: registerImage, handleSubmit: handleSubmitImage } = useForm<IFormImage>({
-    defaultValues: { img: undefined },
   });
 
   const onShowMessage = useCallback(() => {
@@ -72,38 +67,66 @@ const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
 
   const onCloseMessage = useCallback(() => {
     setStep(1);
-    setImage(undefined);
+    setImages([]);
+    setImageFiles([]);
     setShowMessage(false);
   }, []);
-
   // 추가 + 취소할 때마나 POST
-  const onChangeImage = useCallback((e: any) => {
+
+  const onChange = useCallback((e: any) => {
     // 1. POST 방식
+    setImageFiles((prev) => [...prev, ...e.target.files]);
+
     // const formData = new FormData();
-    // formData.append('img', e.target.files[0]);
+    // for (let image of imageFiles) {
+    //   formData.append('img', image);
+    // }
     // axios
     //   .post('/api/post/img', formData, {
     //     headers: { 'Content-Type': 'multipart/form-data' },
     //     onUploadProgress: (e) => setPercent(Math.round((e.loaded / e.total) * 100)),
     //   })
     //   .then((res) => {
-    //     console.log(res.data);
-    //     setSrc(res.data.src);
+    //     setImages(res.data);
     //     setStep(2);
     //   })
     //   .then((error) => {
     //     console.error(error);
     //   });
-
     // 2. Reader 방식
-    const reader = new FileReader();
-    reader.readAsDataURL(e.target.files[0]);
-    reader.onload = (e: any) => {
-      setTestImageSrc(e.target.result);
-      setStep(2);
-    };
+    // for (let file of e.target.files) {
+    //   const reader = new FileReader();
+    //   reader.readAsDataURL(file);
+    //   reader.onload = (e: any) => {
+    //     setSrcs((prev) => [...prev, e.target.result]);
+    //     setStep(2);
+    //   };
+    // }
   }, []);
-  const onSubmitImage = useCallback((e, image) => {
+
+  useEffect(() => {
+    console.log({ imageFiles });
+    if (imageFiles != []) {
+      const formData = new FormData();
+      for (let image of imageFiles) {
+        formData.append('img', image);
+      }
+      axios
+        .post('/api/post/img', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+          onUploadProgress: (e) => setPercent(Math.round((e.loaded / e.total) * 100)),
+        })
+        .then((res) => {
+          setImages(res.data);
+          setStep(2);
+        })
+        .then((error) => {
+          console.error(error);
+        });
+    }
+  }, [imageFiles]);
+
+  const onSubmitFinalImages = useCallback((e, image) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('img', image);
@@ -113,7 +136,7 @@ const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
       })
       .then((res) => {
         console.log(res.data);
-        setSrc(res.data.src);
+        setImages(res.data.src);
         setStep(3);
       })
       .then((error) => {
@@ -134,6 +157,13 @@ const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
       });
   }, []);
 
+  const postContextValue: IContext = {
+    id: 'img',
+    images,
+    setImages,
+    onChange,
+  };
+
   return (
     <>
       <Modal
@@ -143,10 +173,10 @@ const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
       >
         <ModalContent>
           <PostContext.Provider value={postContextValue}>
-            <form onSubmit={(e) => onSubmitImage(e, image)} encType={'multipart/form-data'}>
-              {step === 1 && <FirstStep onChange={onChangeImage} id="img" value={image} />}
+            <form onSubmit={(e) => onSubmitFinalImages(e, images)} encType={'multipart/form-data'}>
+              {step === 1 && <FirstStep />}
               {/* step 1 => 사진(들)을 FileList 에 저장*/}
-              {step === 2 && <SecondStep src={testImageSrc} onClickPrev={onShowMessage} />}
+              {step === 2 && <SecondStep onClickPrev={onShowMessage} />}
               {/* step 2 => 사진(들)을 FileList 에 추가적으로 저장*/}
             </form>
 

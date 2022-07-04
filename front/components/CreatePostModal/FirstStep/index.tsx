@@ -33,19 +33,18 @@ const FileDropper = styled.div<{ [key: string]: any }>`
     cursor: pointer;
   }
 `;
-const FirstStep: FC<IProps> = ({ id, value, onChange }) => {
+const FirstStep: FC<IProps> = ({}) => {
   // 첫번째 파일을 받는 곳
   // 여러 이미지 업로드 기능으로 바꿀 것
 
   const theme = useTheme();
-  const context = useContext(PostContext);
-  console.log(context?.testImageSrc);
+  const { id, images, setImages, onChange } = useContext(PostContext);
   return (
-    <Step title={'새 게시물 만들기 - 첫번째 단계'}>
+    <Step title={'새 게시물 만들기'}>
       <FileDropper theme={theme}>
         <span className={'text'}>사진과 동영상을 여기에 끌어다 놓으세요</span>
         <label>
-          <input id={id} type={'file'} value={value} onChange={onChange} hidden />
+          <input id={id} type={'file'} multiple accept={'image/*'} onChange={onChange} hidden />
           <span className={'select-button'}>컴퓨터에서 선택</span>
         </label>
       </FileDropper>
