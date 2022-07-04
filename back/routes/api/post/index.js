@@ -36,16 +36,20 @@ const upload = multer({
 });
 
 // 이미지 먼저 업로드
-router.post("/img", uploadFiles.single("img"), (req, res, next) => {
-  console.log(req.file);
-  return res.status(200).json({ src: `img/${req.file.filename}` }); // 다음 content 포함 게시물 보낼 때 같이 보낼 것
-  // return res.json(req.file.filename);
+router.post("/img", uploadFiles.array("img", 10), (req, res, next) => {
+  try {
+    console.log(req.files);
+    const files = req.files.map((file) => ({ src: `img/${file.filename}` }));
+    return res.status(200).json(files); // 다음 content 포함 게시물 보낼 때 같이 보낼 것
+  } catch (error) {
+    next(error);
+  }
 });
 
 // 그 후 텍스트 업로드
 router.post("/", isLoggedIn, uploadFiles.none(), async (req, res, next) => {
   // req.body.content
-  // req.body.src
+  // req.body.images
   try {
     // 포스트
     const post = await Post.create({

@@ -53,7 +53,16 @@
 
 ### POST /api/post/img
 - 이미지 파일 전송
-- body: {IImage[]}
+- body: formData 의 name 은  "img" 일 것
+  ```
+  const onChange = (e: any) => {
+    const formData = new FormData();
+    for (let file of e.target.files) {
+      forData.append("img", file)
+    }
+    axios.post("/api/post/img", formData).then...
+  }
+  ```
 - return: {src: string}[]
 - src 의 value 값은 `/img/파일명` 형태로, step 3에서 images 를 표현하기 위한 data 로 활용 가능하다.
 - content 롤 보낼 때 같이 보낼 것!!(아래 `POST /api/post` 참고)
