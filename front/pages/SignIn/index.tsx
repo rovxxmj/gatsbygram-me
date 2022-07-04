@@ -57,7 +57,7 @@ const SignIn = () => {
     axios
       .post('/api/user/login', submitData)
       .then((res) => {
-        if (!res.data.currentAccount) {
+        if (!res.data.single) {
           setAccounts(res.data.totalAccounts);
           setShowSelectAccountsModal(true);
         }

@@ -137,7 +137,12 @@ const Navigation = () => {
             )}
           </ActionItems>
           <LoginModal show={showLogin} onCloseModal={onCloseModal} />
-          <PostMenu show={showPostMenu} onCloseModal={onCloseModal} style={{ top: '50px', right: '-12px' }} />
+          <PostMenu
+            show={showPostMenu}
+            setShow={setShowPostMenu}
+            onCloseModal={onCloseModal}
+            style={{ top: '50px', right: '-12px' }}
+          />
           <ProfileMenu show={showProfileMenu} onCloseModal={onCloseModal} style={{ top: '50px', right: '-60px' }} />
         </div>
       </Base>

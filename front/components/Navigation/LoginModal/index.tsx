@@ -54,8 +54,8 @@ const LoginModal: FC<IProps> = ({ show, onCloseModal }) => {
     axios
       .post('/api/user/login', submitData)
       .then((res) => {
-        if (!res.data.currentAccount) {
-          setAccounts(res.data.totalAccounts);
+        if (!res.data.single) {
+          setAccounts(res.data.myAccounts);
           setShowSelectAccountsModal(true);
         }
         console.log(res.data);

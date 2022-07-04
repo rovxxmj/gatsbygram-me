@@ -10,6 +10,7 @@ import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import ProfileButton from '@components/Navigation/ProfileButton';
 import { ProfileCard } from '@components/ProfileMenu/styles';
+import { Link } from 'react-router-dom';
 
 const ProfileMenu: FC<IMenu> = ({ show, onCloseModal, style, rest }) => {
   const theme = useTheme();
@@ -40,11 +41,21 @@ const ProfileMenu: FC<IMenu> = ({ show, onCloseModal, style, rest }) => {
                 <span className={'nickname'}>{userData?.nickname}</span>
               </div>
             </ProfileCard>
-            <MenuItem>프로필</MenuItem>
-            <MenuItem>저장됨</MenuItem>
-            <MenuItem>설정</MenuItem>
-            <MenuItem>계정 전환</MenuItem>
-            <MenuItem onClick={onLogout}>로그아웃</MenuItem>
+            <MenuItem>
+              <Link to={`/${userData?.nickname}`}>프로필</Link>
+            </MenuItem>
+            <MenuItem>
+              <span>저장됨</span>
+            </MenuItem>
+            <MenuItem>
+              <span>설정</span>
+            </MenuItem>
+            <MenuItem>
+              <span>계정 전환</span>
+            </MenuItem>
+            <MenuItem onClick={onLogout}>
+              <span>로그아웃</span>
+            </MenuItem>
           </ul>
         </MenuContent>
       </Menu>

@@ -26,19 +26,24 @@ export const MenuContent = styled.div<IRest>`
 
 export const MenuItem = styled.li<IRest>`
   width: 100%;
-  padding: 10px 12px 8px;
-  background-color: #fff;
-  color: #000;
-  font-size: 14px;
-  cursor: pointer;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray[200]};
-  transition: 0.2s ease;
+
+  & span,
+  a {
+    display: flex;
+    padding: 10px 12px 8px;
+    background-color: #fff;
+    color: #000;
+    font-size: 14px;
+    cursor: pointer;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.gray[200]};
+    transition: 0.2s ease;
+  }
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray[50]};
   }
 `;
 
-const PostMenu: FC<IMenu> = ({ show, onCloseModal, style, rest }) => {
+const PostMenu: FC<IMenu> = ({ show, setShow, onCloseModal, style, rest }) => {
   const theme = useTheme();
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const onClickCreatePost = useCallback(() => {
@@ -47,16 +52,23 @@ const PostMenu: FC<IMenu> = ({ show, onCloseModal, style, rest }) => {
 
   const onClose = useCallback(() => {
     setShowCreatePostModal(false);
+    setShow(true);
   }, []);
 
   return (
     <>
-      <Menu show={show} onCloseModal={onCloseModal}>
+      <Menu show={show} setShow={setShow} onCloseModal={onCloseModal}>
         <MenuContent style={style} {...rest} theme={theme}>
           <ul>
-            <MenuItem onClick={onClickCreatePost}>새 게시물 만들기</MenuItem>
-            <MenuItem>릴스</MenuItem>
-            <MenuItem>라이브</MenuItem>
+            <MenuItem onClick={onClickCreatePost}>
+              <span>새 게시물 만들기</span>
+            </MenuItem>
+            <MenuItem>
+              <span>릴스</span>
+            </MenuItem>
+            <MenuItem>
+              <span>라이브</span>
+            </MenuItem>
           </ul>
         </MenuContent>
       </Menu>
