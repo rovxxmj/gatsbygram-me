@@ -34,8 +34,8 @@ export const ModalContent = styled.div<{ [key: string]: any }>`
     }
 
     & .small-text {
-      margin-top: 10px;
-      font-size: 13px;
+      margin-top: 6px;
+      font-size: 14px;
       color: ${({ theme }) => theme.colors.gray[600]};
     }
   }
@@ -69,7 +69,14 @@ export const ModalContent = styled.div<{ [key: string]: any }>`
   }
 `;
 
-const MessageModal: FC<IProps> = ({ show, setShow, onCloseModal, keyword, setStep }) => {
+const MessageModal: FC<IProps> = ({
+  show,
+  setShow,
+  onCloseModal,
+  keyword,
+  content = '지금 나가면 수정 내용이 저장되지 않습니다.',
+  setStep,
+}) => {
   const theme = useTheme();
 
   const onClose = useCallback(() => {
@@ -81,7 +88,7 @@ const MessageModal: FC<IProps> = ({ show, setShow, onCloseModal, keyword, setSte
       <ModalContent>
         <div className={'text-container'}>
           <p className={'big-text'}>{keyword}을 삭제하시겠어요?</p>
-          <p className={'small-text'}>지금 나가면 수정 내용이 저장되지 않습니다.</p>
+          <p className={'small-text'}>{content}</p>
         </div>
         <div className={'buttons'}>
           <span className={'button delete-button'} onClick={onCloseModal}>

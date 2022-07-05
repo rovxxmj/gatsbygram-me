@@ -38,7 +38,7 @@ const FirstStep: FC<IProps> = ({}) => {
   // 여러 이미지 업로드 기능으로 바꿀 것
 
   const theme = useTheme();
-  const { id, images, setImages, onChange } = useContext(PostContext);
+  const { id, onChange } = useContext(PostContext);
   return (
     <Step title={'새 게시물 만들기'}>
       <FileDropper theme={theme}>

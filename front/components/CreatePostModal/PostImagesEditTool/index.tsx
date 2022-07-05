@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { PostContext } from '@components/CreatePostModal';
 import styled from '@emotion/styled';
@@ -7,8 +7,11 @@ import { TbBoxMultiple } from 'react-icons/tb';
 import { IoCloseOutline } from 'react-icons/io5';
 import { AiOutlinePlus } from 'react-icons/ai';
 import Modal from '@components/Modal';
+import MessageModal from '@components/MessageModal';
 
 interface IProps {
+  show: boolean;
+  onCloseModal: () => void;
   [key: string]: any;
 }
 
@@ -107,49 +110,74 @@ export const AddMoreImageButton = styled.label`
   }
 `;
 
-const PostImageEditTool: FC<IProps> = () => {
+const PostImageEditTool: FC<IProps> = ({ show, onCloseModal }) => {
   const theme = useTheme();
-  const [value, setValue] = useState(undefined);
-  const [showAllImagesModal, setShowAllImagesModal] = useState(false);
-  const { id, images, setImages, onChange } = useContext(PostContext);
-  const onClickHideButton = useCallback(() => {
-    setShowAllImagesModal((prev) => !prev);
-  }, []);
-  const onCloseModal = useCallback(() => {
-    setShowAllImagesModal(false);
-  }, []);
+  const [showMessage, setShowMessage] = useState(false);
+  const { id, imageUrls, setImageUrls, imageFiles, setImageFiles, onChange, setStep } = useContext(PostContext);
+  const [targetIdx, setTargetIdx] = useState(0);
   const onDeleteImageItem = useCallback((idx: number) => {
-    const result = images.filter;
+    setShowMessage(true);
+    setTargetIdx(idx);
+  }, []);
+  const onClose = useCallback((idx: number) => {
+    setShowMessage(false);
+    setImageUrls((prev) => prev.filter((v) => prev.indexOf(v) !== idx));
+    setImageFiles((prev: any[]) => prev.filter((v) => prev.indexOf(v) !== idx));
+    // setStep(2);
   }, []);
 
+  const onClickImageItem = useCallback((idx: number) => {
+    setTargetIdx(idx);
+    // 클릭했을 때 해당 slide 위치값으로 이동하는 것.
+    // react-slide(?) 이용해도 될 것!!
+  }, []);
+
+  useEffect(() => {
+    // setImag;/
+  }, [targetIdx]);
+
+  useEffect(() => {
+    if (imageUrls.length === 0) {
+      setStep(1);
+      setImageUrls([]);
+      setImageFiles([]);
+    }
+  }, [imageUrls]);
+
   return (
-    <Base>
-      <div className={'hide-button'} onClick={onClickHideButton}>
-        <TbBoxMultiple />
-      </div>
-      <Modal show={showAllImagesModal} onCloseModal={onCloseModal}>
-        <ToolBox className={'toolbox'} onClick={onClickHideButton}>
-          <ul>
-            {images.map((image, idx) => (
-              <ImageItem key={`small-img-${idx}`}>
-                <img src={`http://localhost:3095/${image.src}`} />
-                <div className={'delete-button'} onClick={() => onDeleteImageItem(idx)}>
-                  <IoCloseOutline />
-                </div>
-              </ImageItem>
-            ))}
-          </ul>
-          <AddMoreImageButton className={'add-button'}>
-            <div onClick={(e: any) => e.stopPropagation()}>
-              <input id={id} type={'file'} multiple accept={'image/*'} value={value} onChange={onChange} hidden />
-              <span>
-                <AiOutlinePlus />
-              </span>
-            </div>
-          </AddMoreImageButton>
-        </ToolBox>
-      </Modal>
-    </Base>
+    <>
+      <Base>
+        <Modal show={show} onCloseModal={onCloseModal}>
+          <ToolBox className={'toolbox'}>
+            <ul>
+              {imageUrls.map((image, idx) => (
+                <ImageItem key={`small-img-${idx}`} onClick={() => onClickImageItem(idx)}>
+                  <img src={image.src} />
+                  <div className={'delete-button'} onClick={() => onDeleteImageItem(idx)}>
+                    <IoCloseOutline />
+                  </div>
+                </ImageItem>
+              ))}
+            </ul>
+            <AddMoreImageButton className={'add-button'}>
+              <div onClick={(e: any) => e.stopPropagation()}>
+                <input id={id} type={'file'} multiple accept={'image/*'} onChange={onChange} hidden />
+                <span>
+                  <AiOutlinePlus />
+                </span>
+              </div>
+            </AddMoreImageButton>
+          </ToolBox>
+        </Modal>
+      </Base>
+      <MessageModal
+        show={showMessage}
+        setShow={setShowMessage}
+        onCloseModal={() => onClose(targetIdx)}
+        keyword={'사진'}
+        content={'게시물에서 사진이 삭제됩니다.'}
+      />
+    </>
   );
 };
 

@@ -20,8 +20,8 @@ export const ModalContent = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #fff;
-  width: 760px;
-  height: 720px;
+  width: 720px;
+  height: 700px;
   border-radius: 6px;
   overflow: hidden;
   & form {
@@ -44,16 +44,17 @@ interface IImage {
 }
 
 interface IContext {
-  images: IImage[];
-  setImages: React.Dispatch<React.SetStateAction<IImage[]>>;
+  imageUrls: IImage[];
+  setImageUrls: React.Dispatch<React.SetStateAction<IImage[]>>;
   [key: string]: any;
 }
-export const PostContext = createContext<IContext>({ images: [], setImages: () => [] });
+export const PostContext = createContext<IContext>({ imageUrls: [], setImageUrls: () => [] });
 
 const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [imageFiles, setImageFiles] = useState<any[]>([]);
-  const [images, setImages] = useState<{ src: string }[]>([]);
+  const [imageUrls, setImageUrls] = useState<{ src: string }[]>([]);
+  const [imagesReturned, setImagesReturned] = useState<{ src: string }[]>();
   const [percent, setPercent] = useState(0); // progressBar - width(%)
   const [showMessage, setShowMessage] = useState(false);
 
@@ -67,82 +68,49 @@ const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
 
   const onCloseMessage = useCallback(() => {
     setStep(1);
-    setImages([]);
+    setImageUrls([]);
     setImageFiles([]);
     setShowMessage(false);
   }, []);
-  // 추가 + 취소할 때마나 POST
+
+  console.log('imageFiles', imageFiles);
+  console.log('imageUrls', imageUrls);
 
   const onChange = useCallback((e: any) => {
-    // 1. POST 방식
     setImageFiles((prev) => [...prev, ...e.target.files]);
-
-    // const formData = new FormData();
-    // for (let image of imageFiles) {
-    //   formData.append('img', image);
-    // }
-    // axios
-    //   .post('/api/post/img', formData, {
-    //     headers: { 'Content-Type': 'multipart/form-data' },
-    //     onUploadProgress: (e) => setPercent(Math.round((e.loaded / e.total) * 100)),
-    //   })
-    //   .then((res) => {
-    //     setImages(res.data);
-    //     setStep(2);
-    //   })
-    //   .then((error) => {
-    //     console.error(error);
-    //   });
-    // 2. Reader 방식
-    // for (let file of e.target.files) {
-    //   const reader = new FileReader();
-    //   reader.readAsDataURL(file);
-    //   reader.onload = (e: any) => {
-    //     setSrcs((prev) => [...prev, e.target.result]);
-    //     setStep(2);
-    //   };
-    // }
+    for (let file of e.target.files) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e: any) => {
+        setImageUrls((prev) => [...prev, { src: e.target.result }]);
+        setStep(2);
+      };
+    }
   }, []);
 
-  useEffect(() => {
-    console.log({ imageFiles });
-    if (imageFiles != []) {
-      const formData = new FormData();
-      for (let image of imageFiles) {
-        formData.append('img', image);
-      }
-      axios
-        .post('/api/post/img', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-          onUploadProgress: (e) => setPercent(Math.round((e.loaded / e.total) * 100)),
-        })
-        .then((res) => {
-          setImages(res.data);
-          setStep(2);
-        })
-        .then((error) => {
-          console.error(error);
-        });
-    }
-  }, [imageFiles]);
-
-  const onSubmitFinalImages = useCallback((e, image) => {
+  const onSubmitFinalImages = useCallback((e, imageFiles) => {
     e.preventDefault();
+
     const formData = new FormData();
-    formData.append('img', image);
+    for (let file of imageFiles) {
+      formData.append('img', file);
+    }
+
     axios
       .post('/api/post/img', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then((res) => {
         console.log(res.data);
-        setImages(res.data.src);
+        setImagesReturned(res.data);
         setStep(3);
       })
       .then((error) => {
         console.error(error);
       });
   }, []);
+
+  console.log(imagesReturned);
 
   const onSubmit = useCallback((data: IForm) => {
     axios
@@ -159,9 +127,14 @@ const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
 
   const postContextValue: IContext = {
     id: 'img',
-    images,
-    setImages,
+    imageUrls,
+    setImageUrls,
+    imageFiles,
+    setImageFiles,
     onChange,
+    onSubmitFinalImages,
+    step,
+    setStep,
   };
 
   return (
@@ -173,7 +146,7 @@ const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
       >
         <ModalContent>
           <PostContext.Provider value={postContextValue}>
-            <form onSubmit={(e) => onSubmitFinalImages(e, images)} encType={'multipart/form-data'}>
+            <form onSubmit={(e) => onSubmitFinalImages(e, imageFiles)} encType={'multipart/form-data'}>
               {step === 1 && <FirstStep />}
               {/* step 1 => 사진(들)을 FileList 에 저장*/}
               {step === 2 && <SecondStep onClickPrev={onShowMessage} />}
