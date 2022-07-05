@@ -47,6 +47,12 @@ export const Base = styled.div<{ [key: string]: any }>`
     font-size: 14px;
     color: ${({ theme }) => theme.colors.blue[500]};
   }
+
+  & .post-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const Button = styled.button`

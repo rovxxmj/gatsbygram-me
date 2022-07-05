@@ -15,8 +15,8 @@ export const Button = styled.button`
 export const ImagePreview = styled.div`
   overflow-x: scroll;
   display: flex;
-  //width: 100%;
-  height: 100%;
+  width: 700px;
+  height: 700px;
   & img {
     width: 100%;
     height: 100%;
