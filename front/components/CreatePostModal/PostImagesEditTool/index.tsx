@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useContext } from 'react';
-import { PostContext } from '@components/CreatePostModal';
+import { CreatePostContext } from '@components/CreatePostModal';
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
 import { TbBoxMultiple } from 'react-icons/tb';
@@ -113,7 +113,7 @@ export const AddMoreImageButton = styled.label`
 const PostImageEditTool: FC<IProps> = ({ show, onCloseModal }) => {
   const theme = useTheme();
   const [showMessage, setShowMessage] = useState(false);
-  const { id, imageUrls, setImageUrls, imageFiles, setImageFiles, onChange, setStep } = useContext(PostContext);
+  const { id, imageUrls, setImageUrls, imageFiles, setImageFiles, onChange, setStep } = useContext(CreatePostContext);
   const [targetIdx, setTargetIdx] = useState(0);
   const onDeleteImageItem = useCallback((idx: number) => {
     setShowMessage(true);

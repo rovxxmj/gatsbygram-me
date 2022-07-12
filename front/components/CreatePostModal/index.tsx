@@ -9,6 +9,7 @@ import SecondStep from '@components/CreatePostModal/SecondStep';
 import MessageModal from '@components/MessageModal';
 import { toast } from 'react-toastify';
 import ThirdStep from '@components/CreatePostModal/ThirdStep';
+import useInput from '@hooks/useInput';
 
 interface IProps {
   show: boolean;
@@ -25,22 +26,12 @@ export const ModalContent = styled.div<{ [key: string]: any }>`
   height: 740px;
   border-radius: 6px;
   overflow: hidden;
-  transition: 0.2s ease;
+  transition: 0.4s ease;
   & form {
     width: 100%;
     height: 100%;
   }
 `;
-
-interface IForm {
-  content: string;
-  location?: string;
-  hideCounts: boolean;
-  turnOffComments: boolean;
-  images: { src: string }[];
-  // hashtags: string[],
-  // mentions: string[]
-}
 
 interface IImage {
   src: string;
@@ -51,20 +42,19 @@ interface IContext {
   setImageUrls: React.Dispatch<React.SetStateAction<IImage[]>>;
   [key: string]: any;
 }
-export const PostContext = createContext<IContext>({ imageUrls: [], setImageUrls: () => [] });
+export const CreatePostContext = createContext<IContext>({ imageUrls: [], setImageUrls: () => [] });
 
 const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [imageFiles, setImageFiles] = useState<any[]>([]);
   const [imageUrls, setImageUrls] = useState<{ src: string }[]>([]);
-  const [imagesReturned, setImagesReturned] = useState<{ src: string }[]>();
   const [finalImages, setFinalImages] = useState<{ src: string }[]>([]);
+  const [location, onChangeLocation, setLocation] = useInput(undefined);
+  const [content, onChangeContent, setContent] = useInput('');
+  const [hideCounts, setHideCounts] = useState(false);
+  const [turnOffComments, setTurnOffComments] = useState(false);
   const [percent, setPercent] = useState(0); // progressBar - width(%)
   const [showMessage, setShowMessage] = useState(false);
-
-  const { register, handleSubmit } = useForm<IForm>({
-    defaultValues: { content: '', location: '', hideCounts: false, turnOffComments: false, images: [] },
-  });
 
   const onShowMessage = useCallback(() => {
     setShowMessage(true);
@@ -111,14 +101,23 @@ const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
       });
   }, []);
 
-  console.log(step);
-
-  const onSubmit = useCallback((data: IForm) => {
+  const onSubmit = useCallback((e: any, data) => {
+    e.preventDefault();
+    console.log(data);
     axios
       .post('/api/post', data)
       .then((res) => {
         console.log(res.data);
         toast.success('post submit 성공');
+        setStep(1);
+        setImageUrls([]);
+        setImageFiles([]);
+        setFinalImages([]);
+        setLocation(undefined);
+        setContent('');
+        setHideCounts(false);
+        setTurnOffComments(false);
+        onCloseModal();
       })
       .catch((error) => {
         console.error(error);
@@ -136,6 +135,16 @@ const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
     onSubmitFinalImages,
     step,
     setStep,
+    location,
+    onChangeLocation,
+    setLocation,
+    content,
+    onChangeContent,
+    setContent,
+    hideCounts,
+    setHideCounts,
+    turnOffComments,
+    setTurnOffComments,
   };
 
   return (
@@ -146,30 +155,22 @@ const CreatePostModal: FC<IProps> = ({ show, onCloseModal }) => {
         style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
       >
         <ModalContent bigger={step === 3 ? true : false}>
-          <PostContext.Provider value={postContextValue}>
+          <CreatePostContext.Provider value={postContextValue}>
             {[1, 2].includes(step) && (
               <form onSubmit={(e) => onSubmitFinalImages(e, imageFiles)} encType={'multipart/form-data'}>
                 {step === 1 && <FirstStep />}
-                {/* step 1 => 사진(들)을 FileList 에 저장*/}
                 {step === 2 && <SecondStep onClickPrev={onShowMessage} />}
-                {/* step 2 => 사진(들)을 FileList 에 추가적으로 저장*/}
               </form>
             )}
 
-            {step === 3 && <ThirdStep />}
-            <>
-              // {/*<form onSubmit={handleSubmit(onSubmit)} encType={'multipart/form-data'}>*/}
-              // {/*  <Step title={'작성하기'}>*/}
-              // {/*    <input type={'text'} {...register('content')} placeholder={'글'} />*/}
-              // {/*    <input type={'text'} {...register('location')} placeholder={'장소'} />*/}
-              // {/*    <input type={'checkbox'} {...register('hideCounts')} placeholder={'숫자표시'} />*/}
-              // {/*    <input type={'checkbox'} {...register('turnOffComments')} placeholder={'댓글 기능 유무'} />*/}
-              // {/*  </Step>*/}
-              // {/*  <button type={'submit'}>공유하기</button>*/}
-              // {/*</form>*/}
-              //{' '}
-            </>
-          </PostContext.Provider>
+            {step === 3 && (
+              <form
+                onSubmit={(e) => onSubmit(e, { content, location, hideCounts, turnOffComments, images: finalImages })}
+              >
+                <ThirdStep />
+              </form>
+            )}
+          </CreatePostContext.Provider>
         </ModalContent>
       </Modal>
 

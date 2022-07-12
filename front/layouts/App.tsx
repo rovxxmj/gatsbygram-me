@@ -11,6 +11,7 @@ const SignUp = loadable(() => import('@pages/SignUp'));
 const Direct = loadable(() => import('@pages/Direct'));
 const Explore = loadable(() => import('@pages/Explore'));
 const Profile = loadable(() => import('@pages/Profile'));
+const Post = loadable(() => import('@pages/Post'));
 
 const Base = styled.div<{ [key: string]: any }>`
   background-color: ${({ theme }) => theme.colors.gray[50]};
@@ -21,6 +22,8 @@ const Container = styled.div`
   max-width: 975px;
   padding: 0 20px;
   margin: auto;
+  height: calc(100% - 70px);
+  overflow-y: scroll;
 `;
 const App = () => {
   return (
@@ -29,12 +32,13 @@ const App = () => {
         <Navigation />
         <Container>
           <Switch>
-            <Route exact path={'/'} component={Home} />
             <Route path={'/sign_in'} component={SignIn} />
             <Route path={'/sign_up'} component={SignUp} />
             <Route path={'/explore'} component={Explore} />
             <Route path={'/direct/inbox'} component={Direct} />
+            <Route path={'/p/:postId'} component={Home} />
             <Route path={'/:nickname'} component={Profile} />
+            <Route path={'/'} component={Home} />
           </Switch>
         </Container>
       </Base>

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { createContext, FC, useCallback, useState } from 'react';
 import { IPost } from '@typings/db';
 import styled from '@emotion/styled';
 import PostHeader from '@components/Post/PostHeader';
@@ -9,9 +9,16 @@ import PostContent from '@components/Post/PostContent';
 import PostCommentForm from '@components/Post/PostCommentForm';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
+import { Link, useHistory } from 'react-router-dom';
+import PostDetailModal from '@components/PostDetailModal';
 
 interface IProps {
-  dataSource: IPost;
+  post: IPost;
+}
+interface IContext {
+  like: boolean;
+  setLike: React.Dispatch<React.SetStateAction<boolean>>;
+  [key: string]: any;
 }
 
 export const Card = styled.div<{ [key: string]: any }>`
@@ -19,19 +26,39 @@ export const Card = styled.div<{ [key: string]: any }>`
   background-color: #fff;
   width: 470px;
   border-radius: 4px;
-  overflow: hidden;
+  //overflow: unset;
+  margin-bottom: 20px;
 `;
 export const ImageWrapper = styled.div``;
-const Post: FC<IProps> = ({ dataSource }) => {
+export const PostContext = createContext<IContext>({ like: false, setLike: () => false });
+const Post: FC<IProps> = ({ post }) => {
   const theme = useTheme();
+  const history = useHistory();
+  // const [showPostDetail, setShowPostDetail] = useState(false);
+  const [like, setLike] = useState(false);
+
+  const onDoubleClick = useCallback(() => {
+    console.log('double click');
+  }, []);
+
+  const value = {
+    like,
+    setLike,
+  };
+
   return (
-    <Card>
-      <PostHeader user={dataSource.User} />
-      <PostImages images={dataSource.Images} />
-      <PostIcons />
-      <PostContent post={dataSource} />
-      <PostCommentForm post={dataSource} />
-    </Card>
+    <>
+      <PostContext.Provider value={value}>
+        <Card onDoubleClick={onDoubleClick}>
+          <PostHeader user={post.User} />
+          <PostImages images={post.Images} />
+          <PostIcons post={post} />
+          <PostContent post={post} />
+          <PostCommentForm post={post} />
+          {/*</Link>*/}
+        </Card>
+      </PostContext.Provider>
+    </>
   );
 };
 

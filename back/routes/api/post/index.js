@@ -61,10 +61,14 @@ router.post("/", isLoggedIn, uploadFiles.none(), async (req, res, next) => {
     });
 
     // 이미지
-    const image = await Image.create({
-      src: req.body.src,
-      PostId: post.id, // belongsTo
-    });
+    const images = await Promise.all(
+      req.body.images.map((image) => {
+        return Image.create({
+          src: image.src,
+          PostId: post.id,
+        });
+      })
+    );
 
     // 해쉬태그
     const hashtags = req.body.content.match(REG_HASHTAG);
@@ -76,7 +80,10 @@ router.post("/", isLoggedIn, uploadFiles.none(), async (req, res, next) => {
           });
         })
       );
-      const postWithHashtags = await post.addHashtags(result.map((v) => v[0]));
+      // post 와 hashtag 연결하기
+      const postWithHashtags = await post.addHashtags(
+        result.map((tag) => tag[0])
+      );
     }
 
     // 맨션
@@ -101,6 +108,22 @@ router.post("/", isLoggedIn, uploadFiles.none(), async (req, res, next) => {
 
 router.delete("/", (req, res, next) => {
   return res.send({ id: 1 });
+});
+
+router.get("/:postId", async (req, res) => {
+  const post = await Post.findOne({
+    where: { id: req.params.postId },
+    include: [
+      { model: Image, attributes: ["id", "src"] },
+      { model: Video, attributes: ["id", "src"] },
+      { model: Hashtag, attributes: ["id", "name"] },
+      { model: User, attributes: ["id", "nickname"] },
+      { model: Mention },
+      { model: Comment, include: [{ model: User }] },
+    ],
+  });
+
+  return res.status(200).json(post);
 });
 
 router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {

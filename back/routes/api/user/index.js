@@ -209,8 +209,27 @@ router.post("/logout", isLoggedIn, (req, res, next) => {
   }
 });
 
-// 해당 유저
-router.post("/:nickname", isLoggedIn, async (req, res, next) => {
+// POST /api/user/:nickname/follow
+router.post("/:nickname/follow", async (req, res, next) => {
+  try {
+    const me = await User.findOne({ where: { id: req.user.id } });
+    const user = await User.findOne({
+      where: { nickname: req.params.nickname },
+    });
+
+    if (me) {
+      await me.addFollowings([parseInt(user.id, 10)]);
+      return res.status(200).send("ok");
+    } else {
+      return res.status(404).send("failed - no user, sign_in/up is needed.");
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/user/:nickname
+router.get("/:nickname", isLoggedIn, async (req, res, next) => {
   const { nickname } = req.params;
   const user = await User.findOne({
     where: { nickname },

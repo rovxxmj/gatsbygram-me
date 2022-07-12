@@ -11,7 +11,7 @@ export const Base = styled.div<{ [key: string]: any }>`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  position: relative;
+  //position: relative;
   & .title {
     padding-top: 4px;
     font-size: 16px;

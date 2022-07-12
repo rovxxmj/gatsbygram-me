@@ -8,11 +8,11 @@ interface IProps {
 
 export const Base = styled.div<{ [key: string]: any }>`
   display: flex;
-  width: ${({ width }) => width}px;
-  //overflow-x: scroll;
+  overflow-x: scroll;
+  width: 100%;
 `;
 
-export const Image = styled.div`
+export const Image = styled.img`
   width: 470px;
   height: 470px;
   background-color: lightgray;
@@ -21,14 +21,10 @@ export const Image = styled.div`
 const Images: FC<IProps> = ({ images }) => {
   const theme = useTheme();
 
-  const data = [
-    { id: 1, src: '/', PostId: 1 },
-    { id: 2, src: '/', PostId: 2 },
-  ];
   return (
-    <Base theme={theme} width={data.length * 470}>
-      {data?.map((v) => (
-        <Image key={v.id}>{v.src}</Image>
+    <Base theme={theme}>
+      {images?.map((image) => (
+        <Image key={image.src} src={`http://localhost:3095/${image.src}`} />
       ))}
     </Base>
   );

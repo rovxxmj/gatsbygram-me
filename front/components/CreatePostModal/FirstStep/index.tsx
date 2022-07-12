@@ -2,7 +2,7 @@ import React, { FC, useCallback, useContext } from 'react';
 import Step from '@components/CreatePostModal/Step';
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
-import { PostContext } from '@components/CreatePostModal';
+import { CreatePostContext } from '@components/CreatePostModal';
 
 interface IProps {
   [key: string]: any;
@@ -38,7 +38,7 @@ const FirstStep: FC<IProps> = ({}) => {
   // 여러 이미지 업로드 기능으로 바꿀 것
 
   const theme = useTheme();
-  const { id, onChange } = useContext(PostContext);
+  const { id, onChange } = useContext(CreatePostContext);
   return (
     <Step title={'새 게시물 만들기'}>
       <FileDropper theme={theme}>

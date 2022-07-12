@@ -19,6 +19,7 @@ export const ModalContent = styled.div<{ [key: string]: any }>`
   background-color: #fff;
   z-index: 1000;
   border-radius: 6px;
+  overflow: hidden;
 
   & .text-container {
     width: 100%;
@@ -61,7 +62,8 @@ export const ModalContent = styled.div<{ [key: string]: any }>`
         background-color: ${({ theme }) => theme.colors.gray[50]};
       }
     }
-    & .delete-button {
+    & .delete-button,
+    .red-button {
       color: ${({ theme }) => theme.colors.red[600]};
     }
     & .cancel-button {

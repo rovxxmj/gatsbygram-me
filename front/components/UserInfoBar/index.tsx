@@ -6,15 +6,16 @@ import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
 import { IoEllipsisVerticalOutline } from 'react-icons/io5';
 import Modal from '@components/Modal';
+import SettingsMenuModal from '@components/SettingsModal';
 
 export const Base = styled.div<{ [key: string]: any }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px;
+  padding: 0 20px;
   width: 100%;
-  height: 48px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray[50]};
+  height: 60px;
+  //border-bottom: 1px solid ${({ theme }) => theme.colors.gray[100]};
   & .left {
     display: flex;
     align-items: center;
@@ -43,9 +44,13 @@ export const Base = styled.div<{ [key: string]: any }>`
 const UserInfoBar = () => {
   const theme = useTheme();
   const { data } = useSWR<IUser>('/api/user/me', fetcher);
-  const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const onCloseModal = useCallback(() => {}, []);
-  const onClickSettingButton = useCallback(() => {}, []);
+  const [showSettingsMenuModal, setShowSettingsMenuModal] = useState(false);
+  const onCloseModal = useCallback(() => {
+    setShowSettingsMenuModal(false);
+  }, []);
+  const onClickSettingButton = useCallback(() => {
+    setShowSettingsMenuModal(true);
+  }, []);
   return (
     <Base theme={theme}>
       <div className={'left'}>
@@ -57,9 +62,7 @@ const UserInfoBar = () => {
       <div className={'setting-button'} onClick={onClickSettingButton}>
         <IoEllipsisVerticalOutline />
       </div>
-      <Modal show={showSettingsModal} onCloseModal={onCloseModal}>
-        <div>....</div>
-      </Modal>
+      <SettingsMenuModal user={data} show={showSettingsMenuModal} onCloseModal={onCloseModal} />
     </Base>
   );
 };

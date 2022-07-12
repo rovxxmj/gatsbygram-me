@@ -2,7 +2,7 @@ import React, { FC, useCallback, useContext, useState } from 'react';
 import Step from '@components/CreatePostModal/Step';
 import styled from '@emotion/styled';
 import { BsArrowLeft } from 'react-icons/bs';
-import { PostContext } from '@components/CreatePostModal';
+import { CreatePostContext } from '@components/CreatePostModal';
 import PostImagesEditTool from '@components/CreatePostModal/PostImagesEditTool';
 import { TbBoxMultiple } from 'react-icons/tb';
 
@@ -50,13 +50,13 @@ export const ToolButton = styled.div`
 `;
 const SecondStep: FC<IProps> = ({ onClickPrev }) => {
   // 두번째 파일을 받는 곳
-  const { id, imageUrls, onChange } = useContext(PostContext);
-  const [showImagesEditTool, setShowImagesEdittool] = useState(false);
+  const { id, imageUrls, onChange } = useContext(CreatePostContext);
+  const [showImagesEditTool, setShowImagesEditTool] = useState(false);
   const onClickHideButton = useCallback(() => {
-    setShowImagesEdittool((prev) => !prev);
+    setShowImagesEditTool((prev) => !prev);
   }, []);
   const onCloseModal = useCallback(() => {
-    setShowImagesEdittool(false);
+    setShowImagesEditTool(false);
   }, []);
   return (
     <Step title={'편집하기'}>

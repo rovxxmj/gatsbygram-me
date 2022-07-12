@@ -28,7 +28,7 @@ export interface IPost {
   RetweetId: number;
   UserId: number;
   hideCounts: boolean;
-  location: boolean;
+  location: string;
   turnOffComments: boolean;
 }
 

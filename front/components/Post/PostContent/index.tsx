@@ -8,9 +8,8 @@ interface IProps {
 const PostContent: FC<IProps> = ({ post }) => {
   return (
     <div>
-      <div>content: {post.content}</div>
+      <div>{post.content}</div>
       <div>
-        comments:
         {post.Comments.map((v) => (
           <div key={v.id}>{v.content}</div>
         ))}
